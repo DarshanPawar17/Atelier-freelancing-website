@@ -61,7 +61,7 @@ const NavBar = () => {
   };
 
   const handleOrdersNavigate = () => {
-    if (isSeller) router.push("/seller/orders");
+    if (isSeller) router.push("/seller/gigs");
     else router.push("/buyer/orders");
   };
 
