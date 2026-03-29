@@ -18,20 +18,21 @@ export const addGig = async (req, res, next) => {
         title,
         description,
         category,
-        features,
         price,
         revisions,
         time,
         shortDesc,
       } = inputData;
 
+      const rawFeatures = inputData.features || inputData['features[]'];
+
       if (!title || !category || !price) {
         return res.status(400).send("Core architectural properties are missing.");
       }
 
       // Convert features to array if it's arriving as a string (legacy/params fallback)
-      const processedFeatures = Array.isArray(features) ? features : 
-                                 (typeof features === "string" ? [features] : []);
+      const processedFeatures = Array.isArray(rawFeatures) ? rawFeatures : 
+                                 (typeof rawFeatures === "string" ? [rawFeatures] : []);
 
       await prisma.gig.create({
         data: {
@@ -45,7 +46,6 @@ export const addGig = async (req, res, next) => {
           revisions: parseInt(revisions),
           createdBy: { connect: { id: req.userId } },
           images: imageUrls,
-          isOrdered: false, // Explicitly initialize availability
         },
       });
 
@@ -54,7 +54,8 @@ export const addGig = async (req, res, next) => {
     return res.status(400).send("Visual assets are required for portfolio initialization.");
   } catch (err) {
     console.error("Gig Creation Error:", err);
-    return res.status(500).send("Internal Architectural Synchronization Error.");
+    // Return the exact error string so we see it in the UI and know what crashed!
+    return res.status(500).send(`Server Crash: ${err.message || err.toString()}`);
   }
 };
 
@@ -147,12 +148,13 @@ export const updateGig = async (req, res, next) => {
         title,
         description,
         category,
-        features,
         price,
         revisions,
         time,
         shortDesc,
       } = inputData;
+
+      const rawFeatures = inputData.features || inputData['features[]'];
 
       const oldData = await prisma.gig.findUnique({
         where: { id: req.params.gigId },
@@ -176,8 +178,8 @@ export const updateGig = async (req, res, next) => {
         }
       }
 
-      const processedFeatures = Array.isArray(features) ? features : 
-                                 (typeof features === "string" ? [features] : []);
+      const processedFeatures = Array.isArray(rawFeatures) ? rawFeatures : 
+                                 (typeof rawFeatures === "string" ? [rawFeatures] : []);
 
       await prisma.gig.update({
         where: { id: req.params.gigId },

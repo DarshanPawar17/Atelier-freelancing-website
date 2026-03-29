@@ -5,7 +5,7 @@ const errorHandler = (err, req, res, next) => {
 
   const statusCode = err instanceof AppError ? err.statusCode : 500;
   const message =
-    err instanceof AppError ? err.message : "Internal Server Error";
+    err instanceof AppError ? err.message : (err.message || "Internal Server Error");
 
   const response = {
     status: "error",

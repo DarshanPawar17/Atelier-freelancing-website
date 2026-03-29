@@ -25,7 +25,9 @@ class SearchService {
       });
     }
 
-    if (searchTerm) {
+    const isGenericSearch = !searchTerm || ["all", "popular", "explore"].includes(searchTerm.toLowerCase());
+
+    if (!isGenericSearch) {
       const words = searchTerm
         .toLowerCase()
         .split(" ")
@@ -53,7 +55,12 @@ class SearchService {
 
     dbLog(`Found ${dbResults.length} gigs from database`);
 
-    if (!searchTerm) return dbResults;
+    if (isGenericSearch) {
+      return dbResults.map(gig => ({
+        ...gig,
+        relevanceScore: this.calculateQualityScore(gig)
+      })).sort((a, b) => b.relevanceScore - a.relevanceScore);
+    }
 
     const searchableGigs = dbResults.map((gig) => ({
       ...gig,

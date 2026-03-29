@@ -15,14 +15,15 @@ function Search() {
     const getData = async () => {
       try {
         const { data } = await axios.get(
-          `${SEARCH_GIGS_ROUTE}?searchTerm=${q || ""}&category=${category || ""}`
+          `${SEARCH_GIGS_ROUTE}?searchTerm=${q || "all"}&category=${category || ""}`
         );
-        setTasks(data.gigs);
+        setTasks(data.gigs || []);
       } catch (err) {
         console.error(err);
+        setTasks([]);
       }
     };
-    if (q !== undefined || category !== undefined) getData();
+    getData();
   }, [q, category]);
 
   return (

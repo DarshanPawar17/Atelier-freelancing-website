@@ -44,20 +44,24 @@ const CreateTask = () => {
     setFeatures(clonedFeatures);
   };
 
-  const addTask = async () => {
+  const [validationError, setValidationError] = useState("");
+
+  const addTask = async (e) => {
+    e.preventDefault();
+    setValidationError("");
     const { category, description, price, revisions, time, title, shortDesc } = data;
     
     // Explicit validation feedback
-    if (!title || !category || !description || !price || !shortDesc) {
-      toast.warning("Please provide all task details in the briefing form.");
+    if (!category || category === "Choose a Category" || category === "") {
+      setValidationError("Please select a Service Category from the dropdown.");
       return;
     }
     if (features.length < 3) {
-      toast.warning("Please include at least 3 core task features / capabilities.");
+      setValidationError(`Please add at least 3 features. You currently have ${features.length}. (Type a feature and click 'Add')`);
       return;
     }
     if (files.length === 0) {
-      toast.warning("At least one visual asset (image) is required for the task board.");
+      setValidationError("Please upload at least one Showcase Image.");
       return;
     }
 
@@ -78,7 +82,6 @@ const CreateTask = () => {
       const response = await axios.post(ADD_GIG_ROUTE, formData, {
         withCredentials: true,
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${cookies.jwt}`,
         },
       });
@@ -88,7 +91,19 @@ const CreateTask = () => {
       }
     } catch (err) {
       console.error("Task creation failed:", err);
-      toast.error(err.response?.data || "Internal Synchronization Error occurred.");
+      let errorMessage = "Failed to create task. Check if all images are valid.";
+      if (err.response?.data) {
+        if (typeof err.response.data === "string") {
+          errorMessage = err.response.data;
+        } else if (err.response.data.message) {
+          errorMessage = err.response.data.message;
+        } else {
+          errorMessage = JSON.stringify(err.response.data);
+        }
+      } else if (err.message) {
+         errorMessage = err.message;
+      }
+      setValidationError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -134,7 +149,7 @@ const CreateTask = () => {
           <p className="text-slate-400 font-medium">Define your task details to begin commissioned acquisitions.</p>
         </div>
 
-        <form className="space-y-12" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-12" onSubmit={addTask}>
           <div className="studio-paper studio-ambient rounded-[3rem] studio-ghost-border bg-white p-8 md:p-16 space-y-12">
             
             {/* Project Overview */}
@@ -190,6 +205,7 @@ const CreateTask = () => {
                 placeholder="Explain the scope of the task, deliverables, and your expertise..."
                 value={data.description}
                 onChange={handleChange}
+                required
               ></textarea>
             </div>
 
@@ -208,6 +224,7 @@ const CreateTask = () => {
                   value={data.time}
                   onChange={handleChange}
                   min={1}
+                  required
                 />
               </div>
               <div className="flex flex-col">
@@ -223,6 +240,7 @@ const CreateTask = () => {
                   value={data.revisions}
                   onChange={handleChange}
                   min={0}
+                  required
                 />
               </div>
             </div>
@@ -300,6 +318,7 @@ const CreateTask = () => {
                   name="shortDesc"
                   value={data.shortDesc}
                   onChange={handleChange}
+                  required
                 />
               </div>
               <div className="flex flex-col">
@@ -315,14 +334,21 @@ const CreateTask = () => {
                   name="price"
                   value={data.price}
                   onChange={handleChange}
+                  required
+                  min={1}
                 />
               </div>
             </div>
 
+            {validationError && (
+              <div className="p-4 bg-red-50 text-red-600 rounded-2xl border border-red-200 text-sm font-semibold text-center mt-6 animate-in fade-in slide-in-from-bottom-2">
+                {validationError}
+              </div>
+            )}
+
             <button
               className="w-full bg-[#0f172a] text-white py-6 rounded-[2.5rem] text-sm font-black uppercase tracking-[0.3em] studio-ambient hover:bg-[#6366f1] transition-all active:scale-95 flex justify-center items-center gap-3 shadow-xl shadow-indigo-500/10 disabled:opacity-50"
-              type="button"
-              onClick={addTask}
+              type="submit"
               disabled={loading}
             >
               {loading ? <ThreeDots height="24" width="40" color="#fff" /> : "Post This Task"}
