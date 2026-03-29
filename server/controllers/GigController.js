@@ -206,6 +206,45 @@ export const updateGig = async (req, res, next) => {
   }
 };
 
+export const deleteGig = async (req, res, next) => {
+  try {
+    if (!isValidObjectId(req.params.gigId)) {
+      return res.status(400).send("Invalid GigId.");
+    }
+
+    const gig = await prisma.gig.findUnique({
+      where: { id: req.params.gigId },
+    });
+
+    if (!gig) {
+      return res.status(404).send("Gig not found.");
+    }
+
+    if (gig.userId !== req.userId) {
+      return res.status(403).send("You can only delete your own gig.");
+    }
+
+    // Delete images from Cloudinary
+    if (gig?.images?.length > 0) {
+      for (const imageUrl of gig.images) {
+        const publicId = imageUrl.split("/").pop().split(".")[0];
+        try {
+          await cloudinary.uploader.destroy(`${CLOUDINARY_FOLDER}/${publicId}`);
+        } catch (ignored) {}
+      }
+    }
+
+    await prisma.gig.delete({
+      where: { id: req.params.gigId },
+    });
+
+    return res.status(200).send("Successfully deleted the task.");
+  } catch (err) {
+    console.error("Gig Deletion Error:", err);
+    return res.status(500).send("Internal Server Error.");
+  }
+};
+
 export const searchGigs = async (req, res, next) => {
   try {
     if (req.query.searchTerm || req.query.category) {

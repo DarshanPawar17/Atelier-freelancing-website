@@ -5,6 +5,7 @@ import {
   getGigById,
   searchGigs,
   updateGig,
+  deleteGig,
   addReview,
   checkGigOrder,
 } from "../controllers/GigController.js";
@@ -22,6 +23,7 @@ gigRoutes.put(
   upload.array("images", 5),
   updateGig
 );
+gigRoutes.delete("/delete/:gigId", verifyToken, deleteGig);
 gigRoutes.get("/search", searchGigs);
 gigRoutes.get("/check-gig-order/:gigId", verifyToken, checkGigOrder);
 gigRoutes.post("/review/:gigId", verifyToken, addReview);

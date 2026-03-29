@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { GET_ALL_USER_GIGS_ROUTE } from "../../../utils/constants";
+import { GET_ALL_USER_GIGS_ROUTE, DELETE_GIG_ROUTE } from "../../../utils/constants";
 import axios from "axios";
 import Link from "next/link";
 import { useCookies } from "react-cookie";
-import { FiEdit2, FiPlus, FiBox, FiCheckCircle, FiActivity } from "react-icons/fi";
+import { FiEdit2, FiPlus, FiBox, FiCheckCircle, FiActivity, FiTrash2 } from "react-icons/fi";
 
 const SellerTasks = () => {
   const [cookies] = useCookies();
@@ -24,6 +24,23 @@ const SellerTasks = () => {
     };
     getUserTasks();
   }, [cookies.jwt]);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to permanently delete this task?")) {
+      return;
+    }
+    
+    try {
+      await axios.delete(`${DELETE_GIG_ROUTE}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${cookies.jwt}`,
+        },
+      });
+      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    } catch (err) {
+      console.error("Error deleting task:", err);
+    }
+  };
 
   const tableHeaderClass = "px-6 py-4 text-xs font-black uppercase tracking-[0.2em] text-slate-400 border-b border-slate-100";
   const tableCellClass = "px-6 py-5 text-sm font-bold text-[#0f172a] border-b border-slate-50";
@@ -100,13 +117,25 @@ const SellerTasks = () => {
                         )}
                       </td>
                       <td className={`${tableCellClass} text-right`}>
-                        <Link
-                          href={`/seller/gigs/${id}`}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all font-black text-[10px] uppercase tracking-widest"
-                        >
-                          <FiEdit2 size={14} />
-                          Edit Task
-                        </Link>
+                        <div className="flex items-center gap-2 justify-end">
+                          <Link
+                            href={`/seller/gigs/${id}`}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all font-black text-[10px] uppercase tracking-widest"
+                          >
+                            <FiEdit2 size={14} />
+                            Edit
+                          </Link>
+                          
+                          {!isOrdered && (
+                            <button
+                              onClick={() => handleDelete(id)}
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-500 hover:text-white transition-all font-black text-[10px] uppercase tracking-widest outline-none"
+                            >
+                              <FiTrash2 size={14} />
+                              Delete
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
