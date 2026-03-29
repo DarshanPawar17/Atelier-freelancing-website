@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap");
+
+:root {
+  /* Surface Philosophy */
+  --surface: #f7f9fb; /* The Gallery Floor */
+  --surface-container-low: #f2f4f6; /* Large Structural Areas */
+  --surface-container-lowest: #ffffff; /* Primary Card Color */
+  --surface-container-highest: #e0e3e5; /* Tertiary Surface */
+  /* Neutral Slate Palette (Architectural Surfaces) */
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --surface-container-low: #f1f5f9;
+  --surface-container: #e2e8f0;
+  
+  /* Midnight Obsidian Palette (Authoritative Tone) */
+  --primary: #0f172a; /* Midnight Slate */
+  --primary-low: #334155;
+  --on-primary: #ffffff;
+  
+  /* Modern Indigo Accent (The 'Jewel' Tone) */
+  --accent: #6366f1; /* Premium Indigo */
+  --accent-low: #818cf8;
+  --accent-glow: rgba(99, 102, 241, 0.15);
+
+  /* Typography */
+  --font-editorial: 'Manrope', sans-serif;
+  --font-functional: 'Inter', sans-serif;
+  
+  /* Glassmorphic Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(226, 232, 240, 0.4);
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--background)] text-[var(--primary)] font-[var(--font-functional)] antialiased selection:bg-[var(--accent)] selection:text-white;
+    scroll-behavior: smooth;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-[var(--font-editorial)] tracking-tight;
+  }
+}
+
+@layer components {
+  /* The Paper Method: Pure white on soft grey or vice-versa */
+  .studio-paper {
+    @apply bg-[var(--surface)] transition-all duration-500 rounded-3xl;
+  }
+
+  .studio-section {
+    @apply bg-[var(--background)];
+  }
+
+  .studio-band {
+    @apply bg-[var(--surface-container-low)];
+  }
+
+  /* The Glassmorphic Atelier Bar */
+  .studio-glass {
+    @apply bg-[var(--glass-bg)] backdrop-blur-xl border border-[var(--glass-border)] transition-all duration-500;
+  }
+
+  /* Premium Primary Action */
+  .studio-primary {
+    @apply bg-[var(--primary)] text-white hover:bg-[var(--primary-low)] transition-all duration-300;
+  }
+
+  /* The 'Jewel' Button Action */
+  .studio-cta {
+    @apply relative overflow-hidden transition-all duration-500 hover:scale-[1.03] active:scale-[0.98];
+  }
+  
+  .studio-cta::after {
+    content: '';
+    @apply absolute inset-0 bg-white/10 opacity-0 hover:opacity-100 transition-opacity;
+  }
+
+  /* Subtle Border Rule: Use luminosity changes first, ghost lines second */
+  .studio-ghost-border {
+    @apply border border-[var(--surface-container)];
+  }
+
+  .studio-ambient {
+    @apply shadow-[0_8px_30px_rgb(0,0,0,0.02)];
+  }
+}
+
+/* Studio Reveal Animations */
+.studio-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: studioReveal 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.studio-delay-1 { animation-delay: 150ms; }
+.studio-delay-2 { animation-delay: 300ms; }
+.studio-delay-3 { animation-delay: 450ms; }
+
+@keyframes studioReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Smooth Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-[#cbd5e1] rounded-full hover:bg-[#94a3b8] transition-colors;
+}
+
+/* Custom Parallax/Float for Premium Feel */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Custom Textures */
+.studio-grain {
+  position: relative;
+}
+
+.studio-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.04;
+  pointer-events: none;
+}
