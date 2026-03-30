@@ -66,7 +66,7 @@ const PopularServices = () => {
             Curated Zones
           </span>
           <h2 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tight studio-reveal studio-delay-1">
-            Popular Freelance <span className="text-[#6366f1]">Specialties.</span>
+            Popular ATELIERX <span className="text-[#6366f1]">Specialties.</span>
           </h2>
         </div>
         <p className="text-slate-500 text-sm md:text-base max-w-sm studio-reveal studio-delay-2 leading-relaxed">

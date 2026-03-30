@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import { StateProvider } from "../context/StateContext";
 import reducer, { initialState } from "../context/StateReducer";
 
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "YourBrand";
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "ATELIERX";
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();

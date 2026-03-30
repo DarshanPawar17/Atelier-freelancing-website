@@ -206,3 +206,57 @@ export const acceptIndividualTask = async (req, res, next) => {
     return res.status(500).send("Internal Architectural Assignment Error.");
   }
 };
+
+export const deliverOrder = async (req, res, next) => {
+  try {
+    const { orderId, deliveryNote } = req.body;
+    const order = await prisma.order.update({
+      where: { id: orderId },
+      data: { 
+        status: "DELIVERED",
+        deliveryNote 
+      },
+    });
+    
+    // System message notification
+    await prisma.messages.create({
+      data: {
+        text: `SYSTEM ARCHITECT: Specialist has delivered the final brief. Note: "${deliveryNote}"`,
+        sender: { connect: { id: req.userId } },
+        receiver: { connect: { id: order.buyerId } },
+        order: { connect: { id: order.id } },
+      }
+    });
+
+    return res.status(200).send("Project successfully delivered for review.");
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Fulfillment Error.");
+  }
+};
+
+export const completeOrder = async (req, res, next) => {
+  try {
+    const { orderId } = req.body;
+    const order = await prisma.order.update({
+      where: { id: orderId },
+      data: { status: "COMPLETED" },
+    });
+
+    // System message notification
+    await prisma.messages.create({
+      data: {
+        text: `SYSTEM ARCHITECT: Client has approved the deliverables. Project officially closed.`,
+        sender: { connect: { id: req.userId } },
+        receiver: { connect: { id: (await prisma.order.findUnique({ where: { id: orderId }, include: { gig: true } })).gig.userId } },
+        order: { connect: { id: order.id } },
+      }
+    });
+
+    return res.status(200).send("Project officially closed and approved.");
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Closure Error.");
+  }
+};
+

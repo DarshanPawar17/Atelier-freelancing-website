@@ -50,6 +50,8 @@ model Order {
   buyerId       String     @db.ObjectId
   paymentIntent String     @unique
   isCompleted   Boolean    @default(false)
+  status        String     @default("IN_PROGRESS")
+  deliveryNote  String?
   gig           Gig        @relation(fields: [gigId], references: [id])
   gigId         String     @db.ObjectId
   price         Int

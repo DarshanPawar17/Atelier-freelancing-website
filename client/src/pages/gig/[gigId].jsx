@@ -46,31 +46,14 @@ function TaskDetails() {
     if (userInfo && gigId) checkOrder();
   }, [userInfo, gigId, cookies.jwt]);
 
-  const handleAcceptAssignment = async () => {
+  const handleAcceptAssignment = () => {
     if (!userInfo) {
       toast.error("Please sign in to accept this studio assignment.");
       return;
     }
     
-    setIsAccepting(true);
-    try {
-      const { data } = await axios.post(ACCEPT_TASK_ROUTE, 
-        { gigId }, 
-        {
-          withCredentials: true,
-          headers: { Authorization: `Bearer ${cookies.jwt}` },
-        }
-      );
-      
-      toast.success("Assignment Successfully Commissioned!");
-      router.push(`/buyer/orders/messages/${data.orderId}`);
-    } catch (err) {
-      console.error(err);
-      toast.error(err.response?.data || "Synchronization Error during assignment.");
-    } finally {
-      setIsAccepting(false);
-      setIsModalOpen(false);
-    }
+    router.push(`/checkout?gigId=${gigId}`);
+    setIsModalOpen(false);
   };
 
   const sidebarStatClass = "flex items-center gap-3 text-sm font-bold text-[#0f172a] opacity-80";

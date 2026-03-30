@@ -1,8 +1,10 @@
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { BsCheckCircle } from "react-icons/bs";
 
 const Business = () => {
+  const router = useRouter();
   const features = [
     "Elite talent matching",
     "Dedicated concierge management",

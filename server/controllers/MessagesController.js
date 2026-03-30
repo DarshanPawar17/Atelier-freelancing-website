@@ -104,7 +104,7 @@ export const getMessages = async (req, res, next) => {
     const receiverId =
       order.buyerId === req.userId ? order.gig?.userId : order.buyerId;
 
-    return res.status(200).json({ messages, receiverId });
+    return res.status(200).json({ messages, receiverId, order });
   } catch (err) {
     console.log(err);
     return res.status(500).send("Internal Server Error");

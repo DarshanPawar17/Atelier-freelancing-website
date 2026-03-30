@@ -28,6 +28,8 @@ export const ACCEPT_TASK_ROUTE = `${ORDER_ROUTES}/accept-task`;
 export const ORDER_SUCCESS = `${ORDER_ROUTES}/success`;
 export const GET_BUYER_ORDERS = `${ORDER_ROUTES}/get-buyer-orders`;
 export const GET_SELLER_ORDERS = `${ORDER_ROUTES}/get-seller-orders`;
+export const DELIVER_ORDER_ROUTE = `${ORDER_ROUTES}/deliver`;
+export const COMPLETE_ORDER_ROUTE = `${ORDER_ROUTES}/complete`;
 
 export const GET_MESSAGES = `${MESSAGE_ROUTES}/get-messages`;
 export const SEND_MESSAGE = `${MESSAGE_ROUTES}/send-message`;
