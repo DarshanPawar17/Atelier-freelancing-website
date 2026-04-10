@@ -24,6 +24,7 @@ export const CHECK_USER_ORDERED_GIG_ROUTE = `${GIG_ROUTES}/check-gig-order`;
 export const ADD_REVIEW_ROUTE = `${GIG_ROUTES}/review`;
 
 export const CREATE_ORDER = `${ORDER_ROUTES}/create`;
+export const VERIFY_PAYMENT = `${ORDER_ROUTES}/verify`;
 export const ACCEPT_TASK_ROUTE = `${ORDER_ROUTES}/accept-task`;
 export const ORDER_SUCCESS = `${ORDER_ROUTES}/success`;
 export const GET_BUYER_ORDERS = `${ORDER_ROUTES}/get-buyer-orders`;

@@ -101,7 +101,7 @@ const SellerTasks = () => {
                         </div>
                       </td>
                       <td className={tableCellClass}>
-                        <span className="text-lg font-black text-[#0f172a]">${price}</span>
+                        <span className="text-lg font-black text-[#0f172a]">₹{price}</span>
                       </td>
                       <td className={tableCellClass}>
                         {isOrdered ? (

@@ -31,7 +31,7 @@ export const getSellerData = async (req, res, next) => {
       const thisYear = new Date(today.getFullYear(), 0, 1);
 
       const {
-        _sum: { price: revenue },
+        _sum: { earnings: revenue },
       } = await prisma.order.aggregate({
         where: {
           gig: {
@@ -45,12 +45,12 @@ export const getSellerData = async (req, res, next) => {
           },
         },
         _sum: {
-          price: true,
+          earnings: true,
         },
       });
 
       const {
-        _sum: { price: dailyRevenue },
+        _sum: { earnings: dailyRevenue },
       } = await prisma.order.aggregate({
         where: {
           gig: {
@@ -64,12 +64,12 @@ export const getSellerData = async (req, res, next) => {
           },
         },
         _sum: {
-          price: true,
+          earnings: true,
         },
       });
 
       const {
-        _sum: { price: monthlyRevenue },
+        _sum: { earnings: monthlyRevenue },
       } = await prisma.order.aggregate({
         where: {
           gig: {
@@ -83,7 +83,7 @@ export const getSellerData = async (req, res, next) => {
           },
         },
         _sum: {
-          price: true,
+          earnings: true,
         },
       });
       return res.status(200).json({

@@ -58,7 +58,7 @@ function SearchGridItem({ gig }) {
         <div className="flex items-center justify-between pt-6 border-t border-slate-50 mt-auto">
           <div className="flex flex-col">
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Task Price</span>
-            <span className="text-2xl font-black text-[#0f172a] tracking-tighter">${gig.price}</span>
+            <span className="text-2xl font-black text-[#0f172a] tracking-tighter">₹{gig.price}</span>
           </div>
           
           <button className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:translate-x-1 transition-all">

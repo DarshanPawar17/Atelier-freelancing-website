@@ -91,7 +91,7 @@ const SellerDashboard = () => {
               <FiDollarSign size={24} />
             </div>
             <div className="flex flex-col">
-              <span className="text-3xl font-black text-[#0f172a]">${dashboardData?.dailyRevenue || 0}</span>
+              <span className="text-3xl font-black text-[#0f172a]">₹{dashboardData?.dailyRevenue || 0}</span>
               <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Earnings</span>
             </div>
           </div>

@@ -72,8 +72,10 @@ const SellerOrders = () => {
                       </td>
                       <td className={tableCellClass}>
                         <div className="flex items-center gap-1.5 text-indigo-600">
-                          <FiDollarSign size={14} />
-                          <span className="text-lg font-black tracking-tighter">{order.gig.price}</span>
+                          <span className="font-black">₹</span>
+                          <span className="text-lg font-black tracking-tighter">
+                            {order.earnings || Math.round(order.price * 0.9)}
+                          </span>
                         </div>
                       </td>
                       <td className={tableCellClass}>

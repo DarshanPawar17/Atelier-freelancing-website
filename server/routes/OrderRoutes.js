@@ -4,6 +4,7 @@ import {
   acceptIndividualTask,
   confirmOrder,
   createOrder,
+  verifyPayment,
   getBuyerOrders,
   getSellerOrders,
   deliverOrder,
@@ -13,6 +14,7 @@ import {
 export const orderRoutes = Router();
 
 orderRoutes.post("/create", verifyToken, createOrder);
+orderRoutes.post("/verify", verifyToken, verifyPayment);
 orderRoutes.post("/accept-task", verifyToken, acceptIndividualTask);
 orderRoutes.put("/success", verifyToken, confirmOrder);
 orderRoutes.get("/get-buyer-orders", verifyToken, getBuyerOrders);

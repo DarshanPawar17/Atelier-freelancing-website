@@ -17,7 +17,7 @@ const Pricing = () => {
               <h4 className="text-md font-normal text-[#74767e]">
                 {gigData.shortDesc}
               </h4>
-              <h6 className="font-medium text-3xl"> ${gigData.price} </h6>
+              <h6 className="font-medium text-3xl"> ₹{gigData.price} </h6>
             </div>
             <div>
               <div className="text-[#62646a] font-semibold text-sm flex gap-6">

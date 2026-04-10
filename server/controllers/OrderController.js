@@ -1,7 +1,12 @@
 import prisma from "../prisma/client.js";
-import Stripe from "stripe";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
 const isValidObjectId = (id) => /^[a-f\d]{24}$/i.test(id);
 
 export const createOrder = async (req, res, next) => {
@@ -32,25 +37,92 @@ export const createOrder = async (req, res, next) => {
       return res.status(400).send("Invalid gig price.");
     }
 
-    const paymentIntent = await stripe.paymentIntents.create({
+    const options = {
       amount,
-      currency: "usd",
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    });
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const razorpayOrder = await razorpay.orders.create(options);
+
+    const COMMISSION_RATE = 0.1; // 10% Platform Commission
+    const earnings = Math.round(Number(gig.price) * (1 - COMMISSION_RATE));
 
     await prisma.order.create({
       data: {
-        paymentIntent: paymentIntent.id,
+        paymentIntent: razorpayOrder.id, // We store order ID as paymentIntent
         price: Math.round(Number(gig.price)),
+        earnings: earnings,
         buyer: { connect: { id: req.userId } },
         gig: { connect: { id: gigId } },
       },
     });
-    return res.status(201).json({ clientSecret: paymentIntent.client_secret });
+
+    return res.status(201).json({ 
+      orderId: razorpayOrder.id,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency
+    });
   } catch (err) {
     console.error("Order Creation Error:", err);
+    return res.status(500).send("Internal Architectural Synchronization Error.");
+  }
+};
+
+export const verifyPayment = async (req, res, next) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(body.toString())
+      .digest("hex");
+
+    const isSignatureValid = expectedSignature === razorpay_signature;
+
+    if (!isSignatureValid) {
+      return res.status(400).json({ status: "failure", message: "Invalid signature" });
+    }
+
+    // Capture the order details before update to trigger notifications
+    const order = await prisma.order.findUnique({
+      where: { paymentIntent: razorpay_order_id },
+      include: { 
+        gig: { include: { createdBy: true } },
+        buyer: true 
+      }
+    });
+
+    if (!order) {
+      return res.status(404).send("Architectural order not found.");
+    }
+
+    // Perform the State Lock
+    await prisma.$transaction([
+      prisma.order.update({
+        where: { id: order.id },
+        data: { isCompleted: true },
+      }),
+      prisma.gig.update({
+        where: { id: order.gigId },
+        data: { isOrdered: true },
+      }),
+      // Create an automated "Task Claimed" notification message
+      prisma.messages.create({
+        data: {
+          text: `SYSTEM ARCHITECT: Portfolio item "${order.gig.title}" has been officially claimed by ${order.buyer?.username || "a buyer"}. Commission is now active.`,
+          sender: { connect: { id: order.buyerId } },
+          receiver: { connect: { id: order.gig.userId } },
+          order: { connect: { id: order.id } },
+        }
+      })
+    ]);
+
+    return res.status(200).json({ status: "success", message: "Order confirmed and project locked.", orderId: order.id });
+  } catch (err) {
+    console.error("Order Verification Error:", err);
     return res.status(500).send("Internal Architectural Synchronization Error.");
   }
 };
@@ -170,11 +242,15 @@ export const acceptIndividualTask = async (req, res, next) => {
       return res.status(400).send("This architectural task has already been claimed.");
     }
 
+    const COMMISSION_RATE = 0.1; // 10% Platform Commission
+    const earnings = Math.round(Number(gig.price) * (1 - COMMISSION_RATE));
+
     // Direct creation of a COMPLETED order (Bypassing Stripe for current testing)
     const order = await prisma.order.create({
       data: {
         paymentIntent: `direct_${Date.now()}_${Math.random().toString(36).substring(7)}`,
         price: Math.round(Number(gig.price)),
+        earnings: earnings,
         isCompleted: true,
         buyer: { connect: { id: req.userId } },
         gig: { connect: { id: gigId } },

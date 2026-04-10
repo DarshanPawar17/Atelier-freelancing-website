@@ -153,7 +153,7 @@ function TaskDetails() {
                   <div className="flex items-end justify-between">
                     <div className="flex flex-col">
                       <span className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Fixed Assignment Fee</span>
-                      <span className="text-5xl font-black text-[#0f172a] tracking-tighter transition-all group-hover:text-indigo-600">${taskData.price}</span>
+                      <span className="text-5xl font-black text-[#0f172a] tracking-tighter transition-all group-hover:text-indigo-600">₹{taskData.price}</span>
                     </div>
                   </div>
 

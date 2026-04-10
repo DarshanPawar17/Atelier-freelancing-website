@@ -55,6 +55,7 @@ model Order {
   gig           Gig        @relation(fields: [gigId], references: [id])
   gigId         String     @db.ObjectId
   price         Int
+  earnings      Float?     @default(0.0)
   messages      Messages[]
 }
 
