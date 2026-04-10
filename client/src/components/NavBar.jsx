@@ -161,6 +161,14 @@ const NavBar = () => {
 
   const ContextMenuData = [
     {
+      name: "Manage Tasks",
+      callback: (e) => {
+        e.stopPropagation();
+        setIsContextMenuVisible(false);
+        router.push("/seller/gigs");
+      },
+    },
+    {
       name: "Profile",
       callback: (e) => {
         e.stopPropagation();
@@ -365,6 +373,7 @@ const NavBar = () => {
                   ) : (
                     <>
                       <li onClick={() => (router.push("/profile"), setIsOpen(false))} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Profile</li>
+                      {isSeller && <li onClick={() => (router.push("/seller/gigs"), setIsOpen(false))} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Manage Tasks</li>}
                       <li onClick={() => (router.push("/search?q=popular"), setIsOpen(false))} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Explore Tasks</li>
                       <li onClick={() => { handleOrdersNavigate(); setIsOpen(false); }} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Orders</li>
                       <li onClick={() => { handleModeSwitch(); setIsOpen(false); }} className="w-full p-4 text-[#1DBF73] font-bold hover:bg-white/50 rounded-2xl">{isSeller ? "Switch to Buyer" : "Switch to Seller"}</li>
