@@ -5,7 +5,7 @@ import axios from "axios";
 import { ADD_GIG_ROUTE } from "../../../utils/constants";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
-import { FiPlus, FiBox, FiTrash2, FiLayers, FiDollarSign, FiClock, FiRepeat, FiCheckCircle, FiArrowRight, FiInfo } from "react-icons/fi";
+import { FiPlus, FiBox, FiTrash2, FiLayers, FiPocket, FiClock, FiRepeat, FiCheckCircle, FiArrowRight, FiInfo } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { ThreeDots } from "react-loader-spinner";
 

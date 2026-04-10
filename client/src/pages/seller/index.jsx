@@ -3,7 +3,7 @@ import { GET_SELLER_DATA_ROUTE } from "../../utils/constants";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
-import { FiBox, FiDollarSign, FiCheckCircle, FiClock, FiPlus } from "react-icons/fi";
+import { FiBox, FiPocket, FiCheckCircle, FiClock, FiPlus } from "react-icons/fi";
 
 const SellerDashboard = () => {
   const [cookies] = useCookies();
@@ -88,7 +88,7 @@ const SellerDashboard = () => {
           {/* Total Earnings */}
           <div className={statCardClass}>
             <div className="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white transition-colors">
-              <FiDollarSign size={24} />
+              <FiPocket size={24} />
             </div>
             <div className="flex flex-col">
               <span className="text-3xl font-black text-[#0f172a]">₹{dashboardData?.dailyRevenue || 0}</span>
