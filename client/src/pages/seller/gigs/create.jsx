@@ -323,8 +323,8 @@ const CreateTask = () => {
               </div>
               <div className="flex flex-col">
                 <label htmlFor="price" className={labelClassName}>
-                   <FiDollarSign className="text-indigo-500" />
-                  Task Price ( $ )
+                   <FiPocket className="text-indigo-500" />
+                  Task Price ( ₹ )
                 </label>
                 <input
                   type="number"
