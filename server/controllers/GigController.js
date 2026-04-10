@@ -1,5 +1,5 @@
 import prisma from "../prisma/client.js";
-import SearchService from "../services/SearchService.js";
+import SearchService from "../services/searchService.js";
 import { cloudinary, CLOUDINARY_FOLDER } from "../config/cloudinary.config.js";
 import { apiLog } from "../utils/logger.js";
 
