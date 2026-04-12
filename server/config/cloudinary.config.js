@@ -41,7 +41,6 @@ export const upload = multer({
   },
 });
 
-// Single upload for profile images
 export const uploadSingle = multer({
   storage,
   limits: {
@@ -54,6 +53,22 @@ export const uploadSingle = multer({
       return cb(new Error("Only JPEG and PNG files are allowed"), false);
     }
     cb(null, true);
+  },
+});
+
+const documentStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: CLOUDINARY_FOLDER + "_docs",
+    resource_type: "raw", 
+  },
+});
+
+export const uploadDocument = multer({
+  storage: documentStorage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+    files: 1,
   },
 });
 

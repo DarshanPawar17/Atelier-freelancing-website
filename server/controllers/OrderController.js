@@ -286,18 +286,28 @@ export const acceptIndividualTask = async (req, res, next) => {
 export const deliverOrder = async (req, res, next) => {
   try {
     const { orderId, deliveryNote } = req.body;
+    let updateData = {
+      status: "DELIVERED",
+      deliveryNote,
+    };
+
+    if (req.file) {
+      updateData.deliveryFileUrl = req.file.path;
+      updateData.deliveryFileName = req.file.originalname;
+    }
+
     const order = await prisma.order.update({
       where: { id: orderId },
-      data: { 
-        status: "DELIVERED",
-        deliveryNote 
-      },
+      data: updateData,
     });
     
+    let noteText = `SYSTEM ARCHITECT: Specialist has delivered the final brief. Note: "${deliveryNote}"`;
+    if (req.file) noteText += ` [Received Secure Package: ${req.file.originalname}]`;
+
     // System message notification
     await prisma.messages.create({
       data: {
-        text: `SYSTEM ARCHITECT: Specialist has delivered the final brief. Note: "${deliveryNote}"`,
+        text: noteText,
         sender: { connect: { id: req.userId } },
         receiver: { connect: { id: order.buyerId } },
         order: { connect: { id: order.id } },
@@ -314,9 +324,12 @@ export const deliverOrder = async (req, res, next) => {
 export const completeOrder = async (req, res, next) => {
   try {
     const { orderId } = req.body;
+    const prevOrder = await prisma.order.findUnique({ where: { id: orderId } });
+    if (!prevOrder) return res.status(404).send("Order not found.");
+
     const order = await prisma.order.update({
       where: { id: orderId },
-      data: { status: "COMPLETED" },
+      data: { status: "COMPLETED", isCompleted: true, earnings: prevOrder.price },
     });
 
     // System message notification
@@ -333,6 +346,45 @@ export const completeOrder = async (req, res, next) => {
   } catch (err) {
     console.error(err);
     return res.status(500).send("Closure Error.");
+  }
+};
+
+export const toggleFeature = async (req, res, next) => {
+  try {
+    const { orderId, feature } = req.body;
+    
+    if (!orderId || !feature) {
+      return res.status(400).send("OrderId and feature are required.");
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: { gig: true },
+    });
+
+    if (!order) return res.status(404).send("Order not found.");
+
+    if (order.gig.userId !== req.userId) {
+      return res.status(403).send("Only the specialist can toggle deliverables.");
+    }
+
+    let updatedFeatures = [...order.completedFeatures];
+    if (updatedFeatures.includes(feature)) {
+      updatedFeatures = updatedFeatures.filter(f => f !== feature);
+    } else {
+      updatedFeatures.push(feature);
+    }
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: orderId },
+      data: { completedFeatures: updatedFeatures },
+      include: { gig: true }
+    });
+
+    return res.status(200).json({ order: updatedOrder });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Toggle feature error.");
   }
 };
 

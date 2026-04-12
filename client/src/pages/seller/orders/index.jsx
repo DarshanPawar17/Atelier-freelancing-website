@@ -11,6 +11,7 @@ import { GET_SELLER_ORDERS, HOST } from "../../../utils/constants";
 const SellerOrders = () => {
   const [cookies] = useCookies();
   const [orders, setOrders] = useState([]);
+  const [activeTab, setActiveTab] = useState("ACTIVE");
   const [{ userInfo }] = useStateProvider();
 
   useEffect(() => {
@@ -41,9 +42,30 @@ const SellerOrders = () => {
       <div className="max-w-[1400px] mx-auto">
         
         {/* Header Section */}
-        <div className="flex flex-col gap-2 mb-12">
-          <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Logistics & Fullfillment</span>
-          <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Active Commissions</h1>
+        <div className="flex flex-col gap-6 mb-12">
+          <div>
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Logistics & Fullfillment</span>
+            <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Your Commissions</h1>
+          </div>
+          
+          <div className="flex items-center gap-4 border-b border-slate-200">
+            <button
+              onClick={() => setActiveTab("ACTIVE")}
+              className={`pb-4 px-2 text-sm font-black uppercase tracking-widest transition-colors border-b-2 ${
+                activeTab === "ACTIVE" ? "border-indigo-500 text-indigo-600" : "border-transparent text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              Active Commissions
+            </button>
+            <button
+              onClick={() => setActiveTab("COMPLETED")}
+              className={`pb-4 px-2 text-sm font-black uppercase tracking-widest transition-colors border-b-2 ${
+                activeTab === "COMPLETED" ? "border-indigo-500 text-indigo-600" : "border-transparent text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              Project History
+            </button>
+          </div>
         </div>
 
         {/* Orders Table */}
@@ -61,8 +83,8 @@ const SellerOrders = () => {
                 </tr>
               </thead>
               <tbody>
-                {orders.length > 0 ? (
-                  orders.map((order) => (
+                {orders.filter(order => activeTab === "ACTIVE" ? order.status !== "COMPLETED" : order.status === "COMPLETED").length > 0 ? (
+                  orders.filter(order => activeTab === "ACTIVE" ? order.status !== "COMPLETED" : order.status === "COMPLETED").map((order) => (
                     <tr key={order.id} className="hover:bg-indigo-50/30 transition-colors group">
                       <td className={tableCellClass}>
                         <div className="flex flex-col">
@@ -114,7 +136,7 @@ const SellerOrders = () => {
                           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all font-black text-[10px] uppercase tracking-widest"
                         >
                           <FiMessageSquare size={16} />
-                          Open Inquiry
+                          {activeTab === "ACTIVE" ? "Open Inquiry" : "View Record"}
                         </Link>
                       </td>
                     </tr>
@@ -125,8 +147,12 @@ const SellerOrders = () => {
                        <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-6">
                          <FiPackage size={24} />
                        </div>
-                       <h3 className="text-xl font-black text-slate-400 mb-2">No Commissions Yet</h3>
-                       <p className="text-slate-400 font-medium text-sm">Active orders from your portfolio items will appear here.</p>
+                       <h3 className="text-xl font-black text-slate-400 mb-2">
+                         {activeTab === "ACTIVE" ? "No Commissions Yet" : "No Completed Projects"}
+                       </h3>
+                       <p className="text-slate-400 font-medium text-sm">
+                         {activeTab === "ACTIVE" ? "Active orders from your portfolio items will appear here." : "You have no projects in your delivery history."}
+                       </p>
                     </td>
                   </tr>
                 )}

@@ -57,6 +57,46 @@ export const addMessage = async (req, res, next) => {
   }
 };
 
+export const addAttachment = async (req, res, next) => {
+  try {
+    if (!req.body.receiverId || !req.params.orderId) {
+      return res.status(400).send("receiverId and orderId are required.");
+    }
+    if (!req.file) {
+      return res.status(400).send("No file attached.");
+    }
+    if (!isValidObjectId(req.params.orderId) || !isValidObjectId(req.body.receiverId)) {
+      return res.status(400).send("Invalid orderId or receiverId.");
+    }
+
+    const order = await prisma.order.findUnique({
+      where: { id: req.params.orderId },
+      include: { gig: true },
+    });
+    if (!order) return res.status(404).send("Order not found.");
+
+    const isParticipant = order.buyerId === req.userId || order.gig?.userId === req.userId;
+    if (!isParticipant) return res.status(403).send("Not allowed to message on this order.");
+
+    const message = await prisma.messages.create({
+      data: {
+        sender: { connect: { id: req.userId } },
+        receiver: { connect: { id: req.body.receiverId } },
+        order: { connect: { id: req.params.orderId } },
+        text: req.body.message || "Sent an attachment",
+        fileUrl: req.file.path,
+        fileName: req.file.originalname,
+        fileSize: req.file.size,
+      },
+    });
+
+    return res.status(201).json({ message });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Internal Server Error");
+  }
+};
+
 export const getMessages = async (req, res, next) => {
   try {
     if (!req.params.orderId || !req.userId) {

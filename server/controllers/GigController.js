@@ -202,7 +202,7 @@ export const updateGig = async (req, res, next) => {
     return res.status(400).send("Visual assets are required for portfolio update.");
   } catch (err) {
     console.error("Gig Update Error:", err);
-    return res.status(500).send("Internal Architectural Synchronization Error.");
+    return res.status(500).send(`Server Crash: ${err.message || err.toString()}`);
   }
 };
 

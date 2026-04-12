@@ -242,7 +242,7 @@ function Profile() {
                   </div>
                   <div className="flex flex-col items-center p-4 bg-slate-50 rounded-2xl">
                     <FiBriefcase className="text-indigo-400 mb-1" size={18} />
-                    <span className="text-xl font-black text-[#0f172a]">0</span>
+                    <span className="text-xl font-black text-[#0f172a]">{userInfo?.tasksCompleted || 0}</span>
                     <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Tasks</span>
                   </div>
                 </div>

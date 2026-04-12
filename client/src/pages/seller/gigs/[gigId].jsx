@@ -8,11 +8,14 @@ import {
   GET_GIG_BY_ID_ROUTE,
   UPDATE_GIG_ROUTE
 } from "../../../utils/constants";
+import { FiPlus, FiBox, FiTrash2, FiLayers, FiPocket, FiClock, FiRepeat, FiInfo } from "react-icons/fi";
+import { ThreeDots } from "react-loader-spinner";
 
 const create = () => {
   const [cookies] = useCookies();
   const router = useRouter();
   const { gigId } = router.query;
+  const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
   const [features, setFeatures] = useState([]);
   const [data, setData] = useState({
@@ -70,20 +73,27 @@ const create = () => {
         features,
       };
 
-      const response = await axios.put(
-        `${UPDATE_GIG_ROUTE}/${gigId}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${cookies.jwt}`,
-          },
-          params: gigData,
-        }
-      );
+      setLoading(true);
+      try {
+        const response = await axios.put(
+          `${UPDATE_GIG_ROUTE}/${gigId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${cookies.jwt}`,
+            },
+            params: gigData,
+          }
+        );
 
-      if (response.status === 200) {
-        router.push("/seller/gigs");
+        if (response.status === 200) {
+          router.push("/seller/gigs");
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -94,17 +104,24 @@ const create = () => {
         const {
           data: { gig },
         } = await axios.get(`${GET_GIG_BY_ID_ROUTE}/${gigId}`);
-        setData({ ...gig, time: gig.revisions });
+        setData({ ...gig, time: gig.deliveryTime });
         setFeatures(gig.features);
+        
+        let loadedFiles = [];
 
         gig.images.forEach((image) => {
           const url = image;
-          const fileName = image;
+          // Clean the file name from URL
+          const fileName = image.split("/").pop();
           fetch(url).then(async (response) => {
             const contentType = response.headers.get("content-type");
             const blob = await response.blob();
-            const files = new File([blob], fileName, { contentType });
-            setFiles([files]);
+            // Provide explicit MIME type fallback if headers fail, using 'type' not 'contentType'
+            const file = new File([blob], fileName, { type: contentType || "image/jpeg" });
+            setFiles((prev) => {
+              if (prev.some(f => f.name === fileName)) return prev;
+              return [...prev, file];
+            });
           });
         });
       } catch (ex) {
@@ -117,183 +134,222 @@ const create = () => {
   }, [gigId]);
 
   const inputClassName =
-    "block p-4 w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50  focus:ring-blue-500 focus:border-blue-500";
-  const labelClassName = "mb-2 text-lg font-medium text-gray-900";
+    "w-full py-4 px-6 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50 transition-all font-medium text-[#0f172a] placeholder:text-slate-400";
+  const labelClassName = "flex items-center gap-2 mb-3 text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1";
 
   return (
-    <div className="min-h-[80vh] my-10 mt-0 px-32">
-      <h1 className="text-6xl text-gray-900 mb-5">Edit Gig</h1>
-      <h3 className="text-3xl text-gray-900 mb-5">
-        Enter the details to edit the gig
-      </h3>
-      <form className="flex flex-col gap-5 mt-10">
-        <div className="grid grid-cols-2 gap-11">
-          <div>
-            <label htmlFor="title" className={labelClassName}>
-              Gig Title
-            </label>
-            <input
-              type="text"
-              name="title"
-              value={data.title}
-              onChange={handleChange}
-              id="title"
-              className={inputClassName}
-              placeholder="eg. I will do something, I am really good at"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="category" className={labelClassName}>
-              Select a Category
-            </label>
-            <select
-              name="category"
-              id="category"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4"
-              onChange={handleChange}
-              value={data.category}
-            >
-              {categories.map(({ name }) => (
-                <option key={name} value={name}>
-                  {name}
-                </option>
-              ))}
-            </select>
-          </div>
+    <div className="min-h-screen bg-slate-50/50 pt-36 pb-24 px-6 md:px-16 lg:px-24">
+      <div className="max-w-5xl mx-auto">
+        
+        {/* Header Section */}
+        <div className="flex flex-col gap-2 mb-12">
+          <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Modification Hub</span>
+          <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Edit Task</h1>
+          <p className="text-slate-400 font-medium">Update your existing task details.</p>
         </div>
-        <div>
-          <label htmlFor="description" className={labelClassName}>
-            Gig Description
-          </label>
-          <textarea
-            name="description"
-            id="description"
-            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Write a short description"
-            value={data.description}
-            onChange={handleChange}
-          ></textarea>
-        </div>
-        <div className="grid grid-cols-2 gap-11">
-          <div>
-            <label htmlFor="delivery">Delivery Time</label>
-            <input
-              type="number"
-              className={inputClassName}
-              id="delivery"
-              name="time"
-              value={data.time}
-              onChange={handleChange}
-              placeholder="Minimum Delivery Time"
-            />
-          </div>
-          <div>
-            <label htmlFor="revision" className={labelClassName}>
-              Revisions
-            </label>
-            <input
-              type="number"
-              id="revision"
-              className={inputClassName}
-              placeholder="Max Number of Revisions"
-              name="revisions"
-              value={data.revisions}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-2 gap-11">
-          <div>
-            <label htmlFor="features" className={labelClassName}>
-              Features
-            </label>
-            <div className="flex gap-3 items-center mb-5">
-              <input
-                type="text"
-                id="features"
-                className={inputClassName}
-                placeholder="Enter a Feature Name"
-                name="feature"
-                value={data.feature}
+
+        <form className="space-y-12">
+          <div className="studio-paper studio-ambient rounded-[3rem] studio-ghost-border bg-white p-8 md:p-16 space-y-12">
+            
+            {/* Project Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="flex flex-col">
+                <label htmlFor="title" className={labelClassName}>
+                  <FiBox className="text-indigo-500" />
+                  Task Title
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  value={data.title}
+                  onChange={handleChange}
+                  id="title"
+                  className={inputClassName}
+                  placeholder="eg. Professional Logo Design Implementation"
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="category" className={labelClassName}>
+                   <FiLayers className="text-indigo-500" />
+                  Service Category
+                </label>
+                <select
+                  name="category"
+                  id="category"
+                  className={`${inputClassName} appearance-none cursor-pointer`}
+                  onChange={handleChange}
+                  value={data.category}
+                >
+                  <option disabled value="">Select a Category</option>
+                  {categories.map(({ name }) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Comprehensive Briefing */}
+            <div className="flex flex-col">
+              <label htmlFor="description" className={labelClassName}>
+                Detailed Task Brief
+              </label>
+              <textarea
+                name="description"
+                id="description"
+                rows="6"
+                className={`${inputClassName} resize-none`}
+                placeholder="Explain the scope of the task, deliverables, and your expertise..."
+                value={data.description}
                 onChange={handleChange}
-              />
-              <button
-                type="button"
-                className="focus:outline-none text-white bg-blue-700 hover:bg-blue-800  font-medium  text-lg px-10 py-3 rounded-md "
-                onClick={addFeature}
-              >
-                Add
-              </button>
+                required
+              ></textarea>
             </div>
-            <ul className="flex gap-2 flex-wrap">
-              {features.map((feature, index) => {
-                return (
-                  <li
-                    key={feature + index.toString()}
-                    className="flex gap-2 items-center py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 cursor-pointer hover:border-red-200"
+
+            {/* Technical Specifications */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="flex flex-col">
+                <label htmlFor="delivery" className={labelClassName}>
+                   <FiClock className="text-indigo-500" />
+                  Estimated Delivery (Days)
+                </label>
+                <input
+                  type="number"
+                  className={inputClassName}
+                  id="delivery"
+                  name="time"
+                  value={data.time}
+                  onChange={handleChange}
+                  min={1}
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="revisions" className={labelClassName}>
+                   <FiRepeat className="text-indigo-500" />
+                  Allowed Revisions
+                </label>
+                <input
+                  type="number"
+                  id="revisions"
+                  className={inputClassName}
+                  name="revisions"
+                  value={data.revisions}
+                  onChange={handleChange}
+                  min={0}
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Resource Capability Management */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="flex flex-col">
+                <label htmlFor="features" className={labelClassName}>
+                  Task Features / Benefits
+                </label>
+                <div className="flex gap-3 mb-4">
+                  <input
+                    type="text"
+                    id="features"
+                    className={inputClassName}
+                    placeholder="Enter Feature (eg. Source Files)"
+                    name="feature"
+                    value={data.feature}
+                    onChange={handleChange}
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                  />
+                  <button
+                    type="button"
+                    className="bg-[#0f172a] text-white px-8 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all flex items-center gap-2 disabled:opacity-50"
+                    onClick={addFeature}
+                    disabled={!data.feature?.trim()}
                   >
-                    <span>{feature}</span>
-                    <span
-                      className="text-red-700"
-                      onClick={() => removeFeature(index)}
+                    <FiPlus size={14} /> Add
+                  </button>
+                </div>
+                <div className="flex gap-2 flex-wrap min-h-[40px] p-2 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+                  {features.map((feature, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 py-2 px-4 bg-white border border-slate-100 rounded-xl text-xs font-bold text-[#0f172a] shadow-sm"
                     >
-                      X
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-          <div>
-            <label htmlFor="image" className={labelClassName}>
-              Gig Images
-            </label>
-            <div>
-              <ImageUpload files={files} setFile={setFiles} />
+                      <span>{feature}</span>
+                      <FiTrash2
+                        className="text-slate-300 hover:text-red-500 cursor-pointer transition-colors"
+                        onClick={() => removeFeature(index)}
+                      />
+                    </div>
+                  ))}
+                  {features.length < 3 && (
+                    <div className="flex items-center gap-2 text-[10px] text-slate-400 uppercase tracking-widest px-4 py-2">
+                      <FiInfo className="text-indigo-400" />
+                      Add at least {3 - features.length} more feature(s)
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              <div className="flex flex-col">
+                <label className={labelClassName}>Showcase Image</label>
+                <div className="studio-ghost-border rounded-[2rem] p-6 bg-slate-50/50">
+                  <ImageUpload files={files} setFile={setFiles} />
+                  <p className="text-[10px] text-slate-400 mt-3 flex items-center gap-2 italic">
+                    <FiInfo /> Pre-loaded images correspond to current state. Modify to update.
+                  </p>
+                </div>
+              </div>
             </div>
+
+            {/* Commercial Terms */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 md:p-12 bg-indigo-50/30 rounded-[2.5rem] border border-indigo-100/50">
+              <div className="flex flex-col">
+                <label htmlFor="shortDesc" className={labelClassName}>
+                  Short Task Summary
+                </label>
+                <input
+                  type="text"
+                  className={inputClassName}
+                  id="shortDesc"
+                  placeholder="Summarize your task in a few words"
+                  name="shortDesc"
+                  value={data.shortDesc}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="price" className={labelClassName}>
+                   <FiPocket className="text-indigo-500" />
+                  Task Price ( ₹ )
+                </label>
+                <input
+                  type="number"
+                  className={inputClassName}
+                  id="price"
+                  placeholder="Fixed Price"
+                  name="price"
+                  value={data.price}
+                  onChange={handleChange}
+                  required
+                  min={1}
+                />
+              </div>
+            </div>
+
+            <button
+              className="w-full bg-[#0f172a] text-white py-6 rounded-[2.5rem] text-sm font-black uppercase tracking-[0.3em] studio-ambient hover:bg-[#6366f1] transition-all active:scale-95 flex justify-center items-center gap-3 shadow-xl shadow-indigo-500/10 disabled:opacity-50"
+              type="button"
+              onClick={editGig}
+              disabled={loading}
+            >
+              {loading ? <ThreeDots height="24" width="40" color="#fff" /> : "Update Task Details"}
+            </button>
           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-11">
-          <div>
-            <label htmlFor="shortDesc" className={labelClassName}>
-              Short Description
-            </label>
-            <input
-              type="text"
-              className={`${inputClassName}`}
-              id="shortDesc"
-              placeholder="Enter a short description."
-              name="shortDesc"
-              value={data.shortDesc}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label htmlFor="price" className={labelClassName}>
-              Gig Price ( ₹ )
-            </label>
-            <input
-              type="number"
-              className={`${inputClassName} w-1/5`}
-              id="price"
-              placeholder="Enter a price"
-              name="price"
-              value={data.price}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div>
-          <button
-            className="border   text-lg font-semibold px-5 py-3   border-[#1DBF73] bg-[#1DBF73] text-white rounded-md"
-            type="button"
-            onClick={editGig}
-          >
-            Update
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

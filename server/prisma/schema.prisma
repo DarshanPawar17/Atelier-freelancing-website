@@ -47,16 +47,19 @@ model Order {
   id            String     @id @default(auto()) @map("_id") @db.ObjectId
   createdAt     DateTime   @default(now())
   buyer         User       @relation(fields: [buyerId], references: [id])
-  buyerId       String     @db.ObjectId
-  paymentIntent String     @unique
-  isCompleted   Boolean    @default(false)
-  status        String     @default("IN_PROGRESS")
-  deliveryNote  String?
-  gig           Gig        @relation(fields: [gigId], references: [id])
-  gigId         String     @db.ObjectId
-  price         Int
-  earnings      Float?     @default(0.0)
-  messages      Messages[]
+  buyerId         String     @db.ObjectId
+  paymentIntent   String     @unique
+  isCompleted     Boolean    @default(false)
+  status          String     @default("IN_PROGRESS")
+  deliveryNote    String?
+  deliveryFileUrl String?
+  deliveryFileName String?
+  completedFeatures String[] @default([])
+  gig             Gig        @relation(fields: [gigId], references: [id])
+  gigId           String     @db.ObjectId
+  price           Int
+  earnings        Float?     @default(0.0)
+  messages        Messages[]
 }
 
 model Reviews {
@@ -75,6 +78,9 @@ model Messages {
   text       String
   createdAt  DateTime @default(now())
   isRead     Boolean  @default(false)
+  fileUrl    String?
+  fileName   String?
+  fileSize   Int?
   sender     User     @relation("sentMessages", fields: [senderId], references: [id])
   senderId   String   @db.ObjectId
   receiver   User     @relation("receivedMessages", fields: [receiverId], references: [id])

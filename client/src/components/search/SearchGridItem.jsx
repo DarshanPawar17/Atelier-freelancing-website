@@ -44,9 +44,9 @@ function SearchGridItem({ gig }) {
                 <span>{gig.createdBy?.username?.[0] || "P"}</span>
               )}
             </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-black tracking-widest text-[#0f172a]">{gig.createdBy?.username || "Provider"}</span>
-              <span className="text-[9px] uppercase font-bold text-slate-400">Professional Studio</span>
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-[10px] uppercase font-black tracking-widest text-[#0f172a] truncate block">{gig.createdBy?.username || "Provider"}</span>
+              <span className="text-[9px] uppercase font-bold text-slate-400 truncate block">Professional Studio</span>
             </div>
           </div>
           

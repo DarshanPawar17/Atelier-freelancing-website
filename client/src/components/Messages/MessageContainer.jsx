@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import { FiSend, FiCheck, FiMoreVertical, FiLayout, FiCheckCircle, FiClock, FiFileText, FiShield } from "react-icons/fi";
+import { FiSend, FiCheck, FiMoreVertical, FiLayout, FiCheckCircle, FiClock, FiFileText, FiShield, FiPaperclip, FiDownload, FiX } from "react-icons/fi";
 import { useStateProvider } from "../../context/StateContext";
 import { useEffect, useState, useRef } from "react";
-import { GET_MESSAGES, SEND_MESSAGE, DELIVER_ORDER_ROUTE, COMPLETE_ORDER_ROUTE } from "../../utils/constants";
+import { GET_MESSAGES, SEND_MESSAGE, ADD_ATTACHMENT_ROUTE, DELIVER_ORDER_ROUTE, COMPLETE_ORDER_ROUTE, TOGGLE_FEATURE_ROUTE } from "../../utils/constants";
 import { ThreeDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 
@@ -19,7 +19,13 @@ const MessageContainer = () => {
   const [messageText, setMessageText] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [isActionLoading, setActionLoading] = useState(false);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
+  const [deliveryNote, setDeliveryNote] = useState("");
+  const [deliveryFile, setDeliveryFile] = useState(null);
   const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const deliveryFileInputRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,25 +59,47 @@ const MessageContainer = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages.length]);
 
-  const handleDeliver = async () => {
-    const note = prompt("Enter a brief delivery note for the client:");
-    if (!note) return;
+  const handleDeliverSubmit = async () => {
+    if (!deliveryNote) {
+      toast.error("Please add a note for the delivery.");
+      return;
+    }
 
     try {
       setActionLoading(true);
-      await axios.post(DELIVER_ORDER_ROUTE, 
-        { orderId, deliveryNote: note },
-        { headers: { Authorization: `Bearer ${cookies.jwt}` } }
-      );
+      const formData = new FormData();
+      formData.append("orderId", orderId);
+      formData.append("deliveryNote", deliveryNote);
+      if (deliveryFile) formData.append("deliveryFile", deliveryFile);
+
+      await axios.post(DELIVER_ORDER_ROUTE, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${cookies.jwt}`
+        }
+      });
+
       toast.success("Project delivered successfully!");
+      setIsDeliveryModalOpen(false);
+      setDeliveryNote("");
+      setDeliveryFile(null);
       getMessages();
+      // force reload order component since we don't have separate state updater for the gig status locally
+      router.reload();
     } catch (err) {
       toast.error("Failed to deliver project.");
     } finally {
       setActionLoading(false);
     }
+  };
+
+  const openDeliveryModal = () => setIsDeliveryModalOpen(true);
+  const closeDeliveryModal = () => {
+    setIsDeliveryModalOpen(false);
+    setDeliveryNote("");
+    setDeliveryFile(null);
   };
 
   const handleComplete = async () => {
@@ -128,7 +156,69 @@ const MessageContainer = () => {
     }
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingFile(true);
+      const formData = new FormData();
+      formData.append("attachment", file);
+      formData.append("receiverId", receiverId);
+      formData.append("message", `Transferred a secure payload: ${file.name}`);
+
+      const response = await axios.post(
+        `${ADD_ATTACHMENT_ROUTE}/${orderId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${cookies.jwt}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        setMessages([...messages, response.data.message]);
+        toast.success("File uploaded successfully.");
+      }
+    } catch (err) {
+      console.error("File upload error:", err);
+      toast.error("Failed to upload the file.");
+    } finally {
+      setIsUploadingFile(false);
+      e.target.value = null; // Reset input
+    }
+  };
+
+  const handleToggleFeature = async (feature) => {
+    if (!isSeller || order?.status !== "IN_PROGRESS") return;
+
+    // Optimistic UI update
+    const currentlyCompleted = order.completedFeatures || [];
+    const isCompleted = currentlyCompleted.includes(feature);
+    const newFeatures = isCompleted 
+      ? currentlyCompleted.filter(f => f !== feature)
+      : [...currentlyCompleted, feature];
+    
+    setOrder({ ...order, completedFeatures: newFeatures });
+
+    try {
+      await axios.put(TOGGLE_FEATURE_ROUTE, 
+        { orderId, feature },
+        { headers: { Authorization: `Bearer ${cookies.jwt}` }}
+      );
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to sync checklist. Restoring state.");
+      setOrder({ ...order, completedFeatures: currentlyCompleted }); // revert on fail
+    }
+  };
+
   const isSeller = order && userInfo && order.gig?.userId === userInfo.id;
+  const totalFeatures = order?.gig?.features?.length || 0;
+  const completedCount = order?.completedFeatures?.length || 0;
+  const progressPercentage = totalFeatures === 0 ? 100 : Math.round((completedCount / totalFeatures) * 100);
 
   return (
     <div className="min-h-screen bg-slate-50/50 pt-36 pb-24 px-6 md:px-16 lg:px-24">
@@ -206,6 +296,21 @@ const MessageContainer = () => {
                           }`}
                         >
                           <p className="leading-relaxed">{message.text}</p>
+                          {message.fileUrl && (
+                            <a
+                              href={message.fileUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className={`mt-3 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all w-max
+                                ${isOwner 
+                                  ? "bg-white/10 hover:bg-white/20 text-white" 
+                                  : "bg-indigo-50 hover:bg-indigo-100 text-indigo-700"}
+                              `}
+                            >
+                              <FiDownload size={14} />
+                              Download File
+                            </a>
+                          )}
                         </div>
                         <div className="flex items-center gap-2 px-2">
                           <span className="text-[10px] font-black uppercase tracking-[0.1em] text-slate-300">
@@ -226,6 +331,21 @@ const MessageContainer = () => {
             {/* Input Area */}
             <div className={`p-8 border-t border-slate-50 bg-slate-50/30 ${order?.status === "COMPLETED" ? "opacity-50 pointer-events-none" : ""}`}>
               <div className="relative flex items-center gap-4">
+                <input
+                  type="file"
+                  className="hidden"
+                  ref={fileInputRef}
+                  onChange={handleFileUpload}
+                  accept=".pdf,.doc,.docx,.zip,.rar,.png,.jpg,.jpeg"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={order?.status === "COMPLETED" || isUploadingFile}
+                  className="w-14 h-14 bg-white text-slate-400 studio-ghost-border rounded-2xl flex items-center justify-center hover:bg-slate-100 hover:text-indigo-600 transition-all disabled:opacity-50"
+                  title="Attach File"
+                >
+                  {isUploadingFile ? <ThreeDots height="15" width="15" color="#6366f1" /> : <FiPaperclip size={20} />}
+                </button>
                 <input
                   type="text"
                   className="flex-1 bg-white studio-ghost-border rounded-2xl py-4 px-6 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50 transition-all placeholder:text-slate-300"
@@ -273,35 +393,72 @@ const MessageContainer = () => {
               </div>
 
               <div className="space-y-4">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Core Deliverables</span>
-                <div className="space-y-3">
-                  {order?.gig?.features?.map((feature, i) => (
-                    <div key={i} className="flex items-start gap-3 group">
-                      <div className="mt-1 w-4 h-4 rounded-full border-2 border-indigo-100 flex items-center justify-center group-hover:border-indigo-500 transition-colors">
-                        <FiCheck size={10} className="text-indigo-500 opacity-0 group-hover:opacity-100" />
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Core Deliverables</span>
+                  <span className="text-[10px] font-black text-indigo-500">{progressPercentage}%</span>
+                </div>
+                {/* Progress Bar */}
+                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-indigo-500 transition-all duration-500 ease-out" 
+                    style={{ width: `${progressPercentage}%` }}
+                  />
+                </div>
+                <div className="space-y-3 pt-2">
+                  {order?.gig?.features?.map((feature, i) => {
+                    const isChecked = order.completedFeatures?.includes(feature);
+                    return (
+                      <div 
+                        key={i} 
+                        onClick={() => handleToggleFeature(feature)}
+                        className={`flex items-start gap-3 group ${isSeller && order?.status === "IN_PROGRESS" ? "cursor-pointer" : "cursor-default opacity-80"}`}
+                      >
+                        <div className={`mt-1 w-4 h-4 min-w-[1rem] rounded-full border-2 flex items-center justify-center transition-all ${
+                          isChecked 
+                            ? "border-indigo-500 bg-indigo-500" 
+                            : "border-slate-200 group-hover:border-indigo-300"
+                        }`}>
+                          <FiCheck size={10} className={`text-white transition-opacity ${isChecked ? "opacity-100" : "opacity-0"}`} />
+                        </div>
+                        <span className={`text-xs font-bold transition-colors ${isChecked ? "text-slate-400 line-through" : "text-slate-600 group-hover:text-[#0f172a]"}`}>
+                          {feature}
+                        </span>
                       </div>
-                      <span className="text-xs font-bold text-slate-600 group-hover:text-[#0f172a] transition-colors">{feature}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
               {order?.deliveryNote && (
-                <div className="bg-amber-50 rounded-[2rem] p-6 border border-amber-100">
-                  <div className="flex items-center gap-2 mb-3 text-amber-700">
-                    <FiFileText size={16} />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Specialist Handover Note</span>
+                <div className="bg-amber-50 rounded-[2rem] p-6 border border-amber-100 flex flex-col gap-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3 text-amber-700">
+                      <FiFileText size={16} />
+                      <span className="text-[10px] font-black uppercase tracking-widest">Specialist Handover Note</span>
+                    </div>
+                    <p className="text-xs font-medium text-amber-800 leading-relaxed italic">"{order.deliveryNote}"</p>
                   </div>
-                  <p className="text-xs font-medium text-amber-800 leading-relaxed italic">"{order.deliveryNote}"</p>
+                  {order.deliveryFileUrl && (
+                    <a
+                      href={order.deliveryFileUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors"
+                    >
+                      <FiDownload size={16} />
+                      Download Delivery Package
+                    </a>
+                  )}
                 </div>
               )}
 
               <div className="mt-auto pt-8 border-t border-slate-50">
                 {isSeller ? (
                   <button
-                    onClick={handleDeliver}
-                    disabled={order?.status !== "IN_PROGRESS" || isActionLoading}
+                    onClick={openDeliveryModal}
+                    disabled={order?.status !== "IN_PROGRESS" || isActionLoading || progressPercentage < 100}
                     className="w-full py-5 bg-[#0f172a] text-white rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all flex items-center justify-center gap-3 disabled:opacity-30 disabled:bg-slate-200 disabled:text-slate-400 hover:scale-[1.02] active:scale-[0.98]"
+                    title={progressPercentage < 100 ? "Complete all deliverables first" : ""}
                   >
                     {isActionLoading ? <ThreeDots height="20" width="40" color="white" /> : (
                       <>
@@ -335,6 +492,66 @@ const MessageContainer = () => {
 
         </div>
       </div>
+
+      {isDeliveryModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0f172a]/40 backdrop-blur-sm">
+          <div className="bg-white rounded-[2rem] w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
+            <div className="px-8 py-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/30">
+              <h3 className="text-lg font-black text-[#0f172a] uppercase tracking-wider">Final Delivery</h3>
+              <button onClick={closeDeliveryModal} className="text-slate-400 hover:text-[#0f172a] transition-colors">
+                <FiX size={24} />
+              </button>
+            </div>
+            
+            <div className="p-8 space-y-6">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Delivery Package (Optional)</label>
+                <div 
+                  onClick={() => deliveryFileInputRef.current?.click()}
+                  className="w-full border-2 border-dashed border-slate-200 rounded-2xl p-8 flex flex-col items-center justify-center gap-3 hover:bg-slate-50 hover:border-indigo-500/30 cursor-pointer transition-all"
+                >
+                  <FiDownload size={24} className={deliveryFile ? "text-indigo-500" : "text-slate-400"} />
+                  <span className="text-sm font-medium text-slate-600">
+                    {deliveryFile ? deliveryFile.name : "Click to upload .zip, .pdf, or source files"}
+                  </span>
+                </div>
+                <input 
+                  type="file" 
+                  ref={deliveryFileInputRef} 
+                  onChange={(e) => setDeliveryFile(e.target.files[0])} 
+                  className="hidden"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-slate-500">Handover Note</label>
+                <textarea
+                  value={deliveryNote}
+                  onChange={(e) => setDeliveryNote(e.target.value)}
+                  placeholder="Describe your delivery and express gratitude..."
+                  className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 text-slate-700 resize-none h-32"
+                />
+              </div>
+            </div>
+
+            <div className="px-8 py-6 bg-slate-50 flex justify-end gap-3">
+              <button 
+                onClick={closeDeliveryModal}
+                className="px-6 py-3 font-bold text-sm text-slate-500 hover:text-slate-700 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleDeliverSubmit}
+                disabled={isActionLoading || !deliveryNote}
+                className="px-8 py-3 bg-[#0f172a] text-white rounded-xl font-bold text-sm uppercase tracking-wider hover:bg-indigo-600 transition-colors disabled:opacity-50 flex items-center justify-center min-w-[140px]"
+              >
+                {isActionLoading ? <ThreeDots height="15" width="30" color="white" /> : "Deliver"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

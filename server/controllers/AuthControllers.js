@@ -69,7 +69,16 @@ export const getUserInfo = async (req, res, next) => {
     }
 
     delete user.password;
-    return res.status(200).json({ user });
+    
+    // Compute total tasks completed for the user profile dynamically
+    const tasksCompleted = await prisma.order.count({
+      where: {
+        isCompleted: true,
+        gig: { createdBy: { id: req.userId } }
+      }
+    });
+
+    return res.status(200).json({ user: { ...user, tasksCompleted } });
   } catch (err) {
     console.log(err);
     return res.status(500).send("Internal Server Error");
