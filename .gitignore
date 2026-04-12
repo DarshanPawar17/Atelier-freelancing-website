@@ -13,5 +13,12 @@ yarn-error.log*
 tmp/
 server_log.txt
 
-# Documentation (Ignored per user request)
+# Documentation
 *.md
+!README.md
+
+# College / University Project Artifacts
+Major Project Report Format/
+Minor Project Report/
+*.zip
+.vscode/

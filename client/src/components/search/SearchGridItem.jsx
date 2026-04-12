@@ -31,14 +31,18 @@ function SearchGridItem({ gig }) {
       <div className="p-8 flex flex-col flex-1 justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-8 rounded-full border border-slate-100 overflow-hidden shrink-0">
-              <Image
-                src={gig.createdBy?.profileImage ? (gig.createdBy.profileImage.includes("http") ? gig.createdBy.profileImage : `${HOST}/uploads/${gig.createdBy.profileImage}`) : "/default_avatar.png"}
-                alt="Provider"
-                width={32}
-                height={32}
-                className="object-cover"
-              />
+            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-[#003527] border border-slate-100 text-white shrink-0 overflow-hidden text-sm uppercase font-bold">
+              {gig.createdBy?.profileImage ? (
+                <Image
+                  src={gig.createdBy.profileImage.includes("http") ? gig.createdBy.profileImage : `${HOST}/uploads/${gig.createdBy.profileImage}`}
+                  alt="Provider"
+                  width={32}
+                  height={32}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <span>{gig.createdBy?.username?.[0] || "P"}</span>
+              )}
             </div>
             <div className="flex flex-col">
               <span className="text-[10px] uppercase font-black tracking-widest text-[#0f172a]">{gig.createdBy?.username || "Provider"}</span>

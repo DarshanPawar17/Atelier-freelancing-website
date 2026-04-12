@@ -83,13 +83,19 @@ function TaskDetails() {
                 
                 <div className="flex flex-wrap items-center gap-6 pt-4">
                   <div className="flex items-center gap-3 text-sm font-bold border rounded-full px-6 py-2 bg-white">
-                    <Image
-                      src={taskData.createdBy?.profileImage ? (taskData.createdBy.profileImage.includes("http") ? taskData.createdBy.profileImage : `${HOST}/uploads/${taskData.createdBy.profileImage}`) : "/default_avatar.png"}
-                      alt="Provider"
-                      width={24}
-                      height={24}
-                      className="rounded-full overflow-hidden object-cover"
-                    />
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center bg-[#003527] border border-slate-100 text-white shrink-0 overflow-hidden text-[10px] uppercase font-bold">
+                      {taskData.createdBy?.profileImage ? (
+                        <Image
+                          src={taskData.createdBy.profileImage.includes("http") ? taskData.createdBy.profileImage : `${HOST}/uploads/${taskData.createdBy.profileImage}`}
+                          alt="Provider"
+                          width={24}
+                          height={24}
+                          className="object-cover w-full h-full"
+                        />
+                      ) : (
+                        <span>{taskData.createdBy?.username?.[0] || "P"}</span>
+                      )}
+                    </div>
                     <span>{taskData.createdBy?.username}</span>
                   </div>
                   <div className="flex items-center gap-2 text-amber-500 font-bold">
