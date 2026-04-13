@@ -42,7 +42,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-white border-t border-slate-100 pt-16 pb-10 px-6 md:px-[10%]">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-14">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-14">
 
         {/* Brand */}
         <div className="md:col-span-1 flex flex-col gap-5">
@@ -85,6 +85,30 @@ const Footer = () => {
               >
                 Create Account
               </button>
+            </li>
+          </ul>
+        </div>
+
+        {/* Support & Resources */}
+        <div className="flex flex-col gap-5">
+          <h6 className="text-[10px] uppercase tracking-[0.3em] font-black text-slate-400">
+            Support
+          </h6>
+          <ul className="flex flex-col gap-3">
+            <li>
+              <Link href="/contact" className="text-sm font-semibold text-slate-500 hover:text-[#6366f1] transition-colors">
+                Contact Concierge
+              </Link>
+            </li>
+            <li>
+              <Link href="/help" className="text-sm font-semibold text-slate-500 hover:text-[#6366f1] transition-colors">
+                Help Center
+              </Link>
+            </li>
+            <li>
+              <Link href="/status" className="text-sm font-semibold text-slate-500 hover:text-[#6366f1] transition-colors">
+                System Status
+              </Link>
             </li>
           </ul>
         </div>

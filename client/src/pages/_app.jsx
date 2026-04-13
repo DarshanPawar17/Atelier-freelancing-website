@@ -21,7 +21,19 @@ export default function App({ Component, pageProps }) {
         <title>{APP_NAME}</title>
       </Head>
       <NextNProgress stopDelayMs={20} />
-      <ToastContainer />
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        limit={3}
+      />
       <div className="relative flex flex-col h-screen justify-between">
         <NavBar />
         <div

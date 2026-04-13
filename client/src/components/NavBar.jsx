@@ -75,6 +75,7 @@ const NavBar = () => {
 
   const links = [
     { linkName: "AtelierX Business", handler: "/#business", type: "link" },
+    { linkName: "Support", handler: "/contact", type: "link" },
     { linkName: "Explore", handler: "/search?q=popular", type: "link" },
     { linkName: "Become a Freelancer", handler: handleSignup, type: "button" },
     { linkName: "Sign in", handler: handleLogin, type: "button" },
@@ -274,6 +275,12 @@ const NavBar = () => {
                     onClick={handleOrdersNavigate}
                   >
                     Orders
+                  </li>
+                  <li
+                    className="cursor-pointer text-[#5f6b66] hover:text-[#003527] text-sm font-semibold transition-colors"
+                    onClick={() => router.push("/contact")}
+                  >
+                    Support
                   </li>
                   <li
                     className="cursor-pointer px-4 py-1.5 bg-[#f2f4f6] text-[#191c1e] rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#e0e3e5] transition-colors"
