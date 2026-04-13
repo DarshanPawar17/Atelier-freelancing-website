@@ -11,7 +11,7 @@ import {
 import { FiPlus, FiBox, FiTrash2, FiLayers, FiPocket, FiClock, FiRepeat, FiInfo } from "react-icons/fi";
 import { ThreeDots } from "react-loader-spinner";
 
-const create = () => {
+const EditGig = () => {
   const [cookies] = useCookies();
   const router = useRouter();
   const { gigId } = router.query;
@@ -144,8 +144,8 @@ const create = () => {
         {/* Header Section */}
         <div className="flex flex-col gap-2 mb-12">
           <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Modification Hub</span>
-          <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Edit Task</h1>
-          <p className="text-slate-400 font-medium">Update your existing task details.</p>
+          <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Edit Gig</h1>
+          <p className="text-slate-400 font-medium">Update your existing gig details.</p>
         </div>
 
         <form className="space-y-12">
@@ -156,7 +156,7 @@ const create = () => {
               <div className="flex flex-col">
                 <label htmlFor="title" className={labelClassName}>
                   <FiBox className="text-indigo-500" />
-                  Task Title
+                  Gig Title
                 </label>
                 <input
                   type="text"
@@ -194,14 +194,14 @@ const create = () => {
             {/* Comprehensive Briefing */}
             <div className="flex flex-col">
               <label htmlFor="description" className={labelClassName}>
-                Detailed Task Brief
+                Detailed Gig Description
               </label>
               <textarea
                 name="description"
                 id="description"
                 rows="6"
                 className={`${inputClassName} resize-none`}
-                placeholder="Explain the scope of the task, deliverables, and your expertise..."
+                placeholder="Explain the scope of the gig, deliverables, and your expertise..."
                 value={data.description}
                 onChange={handleChange}
                 required
@@ -248,7 +248,7 @@ const create = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="flex flex-col">
                 <label htmlFor="features" className={labelClassName}>
-                  Task Features / Benefits
+                  Gig Features / Benefits
                 </label>
                 <div className="flex gap-3 mb-4">
                   <input
@@ -307,13 +307,13 @@ const create = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 md:p-12 bg-indigo-50/30 rounded-[2.5rem] border border-indigo-100/50">
               <div className="flex flex-col">
                 <label htmlFor="shortDesc" className={labelClassName}>
-                  Short Task Summary
+                  Short Gig Summary
                 </label>
                 <input
                   type="text"
                   className={inputClassName}
                   id="shortDesc"
-                  placeholder="Summarize your task in a few words"
+                  placeholder="Summarize your gig in a few words"
                   name="shortDesc"
                   value={data.shortDesc}
                   onChange={handleChange}
@@ -323,7 +323,7 @@ const create = () => {
               <div className="flex flex-col">
                 <label htmlFor="price" className={labelClassName}>
                    <FiPocket className="text-indigo-500" />
-                  Task Price ( ₹ )
+                  Gig Price ( ₹ )
                 </label>
                 <input
                   type="number"
@@ -345,7 +345,7 @@ const create = () => {
               onClick={editGig}
               disabled={loading}
             >
-              {loading ? <ThreeDots height="24" width="40" color="#fff" /> : "Update Task Details"}
+              {loading ? <ThreeDots height="24" width="40" color="#fff" /> : "Update Gig Details"}
             </button>
           </div>
         </form>
@@ -354,4 +354,4 @@ const create = () => {
   );
 };
 
-export default create;
+export default EditGig;

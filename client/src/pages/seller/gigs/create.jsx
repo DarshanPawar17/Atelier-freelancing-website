@@ -9,7 +9,7 @@ import { FiPlus, FiBox, FiTrash2, FiLayers, FiPocket, FiClock, FiRepeat, FiCheck
 import { toast } from "react-toastify";
 import { ThreeDots } from "react-loader-spinner";
 
-const CreateTask = () => {
+const CreateGig = () => {
   const [cookies] = useCookies();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -90,8 +90,8 @@ const CreateTask = () => {
         setShowSuccessModal(true);
       }
     } catch (err) {
-      console.error("Task creation failed:", err);
-      let errorMessage = "Failed to create task. Check if all images are valid.";
+      console.error("Gig creation failed:", err);
+      let errorMessage = "Failed to create gig. Check if all images are valid.";
       if (err.response?.data) {
         if (typeof err.response.data === "string") {
           errorMessage = err.response.data;
@@ -125,16 +125,16 @@ const CreateTask = () => {
             </div>
             <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500 mb-4 block">Operation Successful</span>
             <h2 className="text-4xl font-black text-[#0f172a] tracking-tighter mb-6 leading-tight">
-              New Task Successfully <br/>Posted
+              New Gig Successfully <br/>Posted
             </h2>
             <p className="text-slate-500 font-medium mb-10 leading-relaxed">
-              Your new task is now live and visible to all clients for acquisition.
+              Your new gig is now live and visible to all clients for acquisition.
             </p>
             <button
               onClick={() => router.push("/seller/gigs")}
               className="bg-[#0f172a] text-white py-5 px-12 rounded-[2rem] text-xs font-black uppercase tracking-[0.3em] studio-ambient hover:bg-[#6366f1] transition-all flex items-center gap-3"
             >
-              Enter Task Board
+              Enter Gig Dashboard
               <FiArrowRight size={14} />
             </button>
           </div>
@@ -145,8 +145,8 @@ const CreateTask = () => {
         {/* Header Section */}
         <div className="flex flex-col gap-2 mb-12">
           <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Creation Hub</span>
-          <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Post a New Task</h1>
-          <p className="text-slate-400 font-medium">Define your task details to begin commissioned acquisitions.</p>
+          <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Post a New Gig</h1>
+          <p className="text-slate-400 font-medium">Define your gig details to begin project acquisitions.</p>
         </div>
 
         <form className="space-y-12" onSubmit={addTask}>
@@ -157,7 +157,7 @@ const CreateTask = () => {
               <div className="flex flex-col">
                 <label htmlFor="title" className={labelClassName}>
                   <FiBox className="text-indigo-500" />
-                  Task Title
+                  Gig Title
                 </label>
                 <input
                   type="text"
@@ -195,14 +195,14 @@ const CreateTask = () => {
             {/* Comprehensive Briefing */}
             <div className="flex flex-col">
               <label htmlFor="description" className={labelClassName}>
-                Detailed Task Brief
+                Detailed Gig Description
               </label>
               <textarea
                 name="description"
                 id="description"
                 rows="6"
                 className={`${inputClassName} resize-none`}
-                placeholder="Explain the scope of the task, deliverables, and your expertise..."
+                placeholder="Explain the scope of the gig, deliverables, and your expertise..."
                 value={data.description}
                 onChange={handleChange}
                 required
@@ -249,7 +249,7 @@ const CreateTask = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div className="flex flex-col">
                 <label htmlFor="features" className={labelClassName}>
-                  Task Features / Benefits
+                  Gig Features / Benefits
                 </label>
                 <div className="flex gap-3 mb-4">
                   <input
@@ -308,13 +308,13 @@ const CreateTask = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-8 md:p-12 bg-indigo-50/30 rounded-[2.5rem] border border-indigo-100/50">
               <div className="flex flex-col">
                 <label htmlFor="shortDesc" className={labelClassName}>
-                  Short Task Summary
+                  Short Gig Summary
                 </label>
                 <input
                   type="text"
                   className={inputClassName}
                   id="shortDesc"
-                  placeholder="Summarize your task in a few words"
+                  placeholder="Summarize your gig in a few words"
                   name="shortDesc"
                   value={data.shortDesc}
                   onChange={handleChange}
@@ -324,7 +324,7 @@ const CreateTask = () => {
               <div className="flex flex-col">
                 <label htmlFor="price" className={labelClassName}>
                    <FiPocket className="text-indigo-500" />
-                  Task Price ( ₹ )
+                  Gig Price ( ₹ )
                 </label>
                 <input
                   type="number"
@@ -351,7 +351,7 @@ const CreateTask = () => {
               type="submit"
               disabled={loading}
             >
-              {loading ? <ThreeDots height="24" width="40" color="#fff" /> : "Post This Task"}
+              {loading ? <ThreeDots height="24" width="40" color="#fff" /> : "Post This Gig"}
             </button>
           </div>
         </form>
@@ -360,4 +360,4 @@ const CreateTask = () => {
   );
 };
 
-export default CreateTask;
+export default CreateGig;

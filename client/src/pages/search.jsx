@@ -111,11 +111,11 @@ function Search() {
             </div>
             <h1 className="text-4xl md:text-6xl font-black text-[#0f172a] tracking-tighter leading-tight">
               {q ? (
-                <>Tasks matching <span className="text-indigo-600">"{q}"</span></>
+                <>Gigs matching <span className="text-indigo-600">"{q}"</span></>
               ) : category ? (
-                <>Top <span className="text-indigo-600">{category}</span> Tasks</>
+                <>Top <span className="text-indigo-600">{category}</span> Gigs</>
               ) : (
-                "Explore Available Tasks"
+                "Explore Available Gigs"
               )}
             </h1>
           </div>
@@ -227,7 +227,7 @@ function Search() {
               {filteredTasks === undefined ? (
                 <div className="flex flex-col items-center justify-center py-40 gap-6">
                   <ThreeDots height="40" width="80" color="#6366f1" />
-                  <span className="text-xs font-black uppercase tracking-widest text-slate-400">Searching Task Board...</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-slate-400">Searching Gigs...</span>
                 </div>
               ) : filteredTasks.length > 0 ? (
                 <motion.div layout className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
@@ -255,9 +255,9 @@ function Search() {
                   <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-200 mb-8">
                     <FiSearch size={32} />
                   </div>
-                  <h2 className="text-3xl font-black text-[#0f172a] tracking-tight mb-4">No Matching Tasks</h2>
+                  <h2 className="text-3xl font-black text-[#0f172a] tracking-tight mb-4">No Matching Gigs</h2>
                   <p className="text-slate-500 font-medium max-w-sm">
-                    We couldn't find any available tasks matching your exact filters. Try broadening your budget or delivery time constraints.
+                    We couldn't find any available gigs matching your exact filters. Try broadening your budget or delivery time constraints.
                   </p>
                   <button 
                     onClick={clearFilters}

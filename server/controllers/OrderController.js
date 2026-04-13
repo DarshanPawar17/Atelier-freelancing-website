@@ -29,7 +29,7 @@ export const createOrder = async (req, res, next) => {
     }
 
     if (gig.isOrdered) {
-      return res.status(400).send("This architectural task has already been claimed.");
+      return res.status(400).send("This Gig has already been claimed.");
     }
 
     const amount = Math.round(Number(gig.price) * 100);
@@ -65,7 +65,7 @@ export const createOrder = async (req, res, next) => {
     });
   } catch (err) {
     console.error("Order Creation Error:", err);
-    return res.status(500).send("Internal Architectural Synchronization Error.");
+    return res.status(500).send("Internal Server Error.");
   }
 };
 
@@ -96,7 +96,7 @@ export const verifyPayment = async (req, res, next) => {
     });
 
     if (!order) {
-      return res.status(404).send("Architectural order not found.");
+      return res.status(404).send("Order not found.");
     }
 
     // Perform the State Lock
@@ -112,7 +112,7 @@ export const verifyPayment = async (req, res, next) => {
       // Create an automated "Task Claimed" notification message
       prisma.messages.create({
         data: {
-          text: `SYSTEM ARCHITECT: Portfolio item "${order.gig.title}" has been officially claimed by ${order.buyer?.username || "a buyer"}. Commission is now active.`,
+          text: `SYSTEM: Gig "${order.gig.title}" has been hired by ${order.buyer?.username || "a buyer"}. Project is now active.`,
           sender: { connect: { id: order.buyerId } },
           receiver: { connect: { id: order.gig.userId } },
           order: { connect: { id: order.id } },
@@ -120,10 +120,10 @@ export const verifyPayment = async (req, res, next) => {
       })
     ]);
 
-    return res.status(200).json({ status: "success", message: "Order confirmed and project locked.", orderId: order.id });
+    return res.status(200).json({ status: "success", message: "Order confirmed.", orderId: order.id });
   } catch (err) {
     console.error("Order Verification Error:", err);
-    return res.status(500).send("Internal Architectural Synchronization Error.");
+    return res.status(500).send("Internal Server Error.");
   }
 };
 
@@ -143,7 +143,7 @@ export const confirmOrder = async (req, res, next) => {
     });
 
     if (!order) {
-      return res.status(404).send("Architectural order not found.");
+      return res.status(404).send("Order not found.");
     }
 
     // Perform the State Lock: Mark order completed AND mark gig as ordered (First-Come, First-Served)
@@ -159,7 +159,7 @@ export const confirmOrder = async (req, res, next) => {
       // Create an automated "Task Claimed" notification message
       prisma.messages.create({
         data: {
-          text: `SYSTEM ARCHITECT: Portfolio item "${order.gig.title}" has been officially claimed by ${order.buyer?.username || "a buyer"}. Commission is now active.`,
+          text: `SYSTEM: Gig "${order.gig.title}" has been hired by ${order.buyer?.username || "a buyer"}. Project is now active.`,
           sender: { connect: { id: order.buyerId } },
           receiver: { connect: { id: order.gig.userId } },
           order: { connect: { id: order.id } },
@@ -167,10 +167,10 @@ export const confirmOrder = async (req, res, next) => {
       })
     ]);
 
-    return res.status(200).send("Order confirmed and project locked.");
+    return res.status(200).send("Order confirmed.");
   } catch (err) {
     console.error("Order Confirmation Error:", err);
-    return res.status(500).send("Internal Architectural Synchronization Error.");
+    return res.status(500).send("Internal Server Error.");
   }
 };
 
@@ -235,11 +235,11 @@ export const acceptIndividualTask = async (req, res, next) => {
     });
 
     if (!gig) {
-      return res.status(404).send("Task not found.");
+      return res.status(404).send("Gig not found.");
     }
 
     if (gig.isOrdered) {
-      return res.status(400).send("This architectural task has already been claimed.");
+      return res.status(400).send("This Gig has already been claimed.");
     }
 
     const COMMISSION_RATE = 0.1; // 10% Platform Commission
@@ -269,7 +269,7 @@ export const acceptIndividualTask = async (req, res, next) => {
     // Initial project kickoff message
     await prisma.messages.create({
       data: {
-        text: `SYSTEM ARCHITECT: Portfolio item "${gig.title}" has been commissioned by ${order.buyer?.username || "a new client"}. Commission is now active.`,
+        text: `SYSTEM: Gig "${gig.title}" has been hired by ${order.buyer?.username || "a client"}. Project is now active.`,
         sender: { connect: { id: req.userId } },
         receiver: { connect: { id: gig.userId } },
         order: { connect: { id: order.id } },
@@ -279,7 +279,7 @@ export const acceptIndividualTask = async (req, res, next) => {
     return res.status(201).json({ orderId: order.id });
   } catch (err) {
     console.error("Direct Accept Error:", err);
-    return res.status(500).send("Internal Architectural Assignment Error.");
+    return res.status(500).send("Internal Order Error.");
   }
 };
 
@@ -301,8 +301,8 @@ export const deliverOrder = async (req, res, next) => {
       data: updateData,
     });
     
-    let noteText = `SYSTEM ARCHITECT: Specialist has delivered the final brief. Note: "${deliveryNote}"`;
-    if (req.file) noteText += ` [Received Secure Package: ${req.file.originalname}]`;
+    let noteText = `SYSTEM: Freelancer has delivered the work. Note: "${deliveryNote}"`;
+    if (req.file) noteText += ` [Received file: ${req.file.originalname}]`;
 
     // System message notification
     await prisma.messages.create({
@@ -314,7 +314,7 @@ export const deliverOrder = async (req, res, next) => {
       }
     });
 
-    return res.status(200).send("Project successfully delivered for review.");
+    return res.status(200).send("Work successfully delivered for review.");
   } catch (err) {
     console.error(err);
     return res.status(500).send("Fulfillment Error.");
@@ -335,14 +335,14 @@ export const completeOrder = async (req, res, next) => {
     // System message notification
     await prisma.messages.create({
       data: {
-        text: `SYSTEM ARCHITECT: Client has approved the deliverables. Project officially closed.`,
+        text: `SYSTEM: Client has approved the work. Project completed.`,
         sender: { connect: { id: req.userId } },
         receiver: { connect: { id: (await prisma.order.findUnique({ where: { id: orderId }, include: { gig: true } })).gig.userId } },
         order: { connect: { id: order.id } },
       }
     });
 
-    return res.status(200).send("Project officially closed and approved.");
+    return res.status(200).send("Project completed and approved.");
   } catch (err) {
     console.error(err);
     return res.status(500).send("Closure Error.");
@@ -365,7 +365,7 @@ export const toggleFeature = async (req, res, next) => {
     if (!order) return res.status(404).send("Order not found.");
 
     if (order.gig.userId !== req.userId) {
-      return res.status(403).send("Only the specialist can toggle deliverables.");
+      return res.status(403).send("Only the freelancer can toggle features.");
     }
 
     let updatedFeatures = [...order.completedFeatures];

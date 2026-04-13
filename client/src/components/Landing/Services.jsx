@@ -11,7 +11,7 @@ const Services = () => {
           Service Spectrum
         </span>
         <h2 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tight leading-tight studio-reveal studio-delay-1">
-          Hand-Picked <span className="text-[#6366f1]">Specialists</span> <br /> 
+          Hand-Picked <span className="text-[#6366f1]">Freelancers</span> <br /> 
           For Every Discipline.
         </h2>
       </div>
@@ -45,7 +45,7 @@ const Services = () => {
       <div className="mt-20 flex justify-center studio-reveal studio-delay-3">
         <div className="max-w-md text-center">
           <p className="text-slate-400 italic text-sm font-medium leading-relaxed">
-            &ldquo;We don&apos;t just provide services; we provide the architectural foundation for your digital legacy.&rdquo;
+            &ldquo;We don&apos;t just provide services; we provide the digital foundation for your next project.&rdquo;
           </p>
           <div className="mt-4 flex items-center justify-center gap-2">
             <span className="w-8 h-px bg-slate-200"></span>

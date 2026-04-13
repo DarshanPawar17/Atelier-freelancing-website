@@ -26,7 +26,7 @@ const SuccessPage = () => {
         );
       } catch (err) {
         console.error("Order status update error:", err);
-        toast.error("Handshake synchronization occurred. Please verify your orders.");
+        toast.error("Synchronization error occurred. Please verify your orders.");
       }
     };
 
@@ -57,18 +57,18 @@ const SuccessPage = () => {
              </div>
           </div>
 
-          <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500 mb-4">Transaction Finalized</span>
+          <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500 mb-4">Payment Confirmed</span>
           <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter mb-6 leading-tight">
-            Acquisition <br/>Successful.
+            Order <br/>Successful.
           </h1>
           
           <div className="space-y-4 mb-10 w-full">
             <p className="text-slate-500 font-medium">
-              Your architectural project has been officially commissioned and is now being architected.
+              Your gig has been officially hired and is now in progress.
             </p>
             <div className="p-4 bg-slate-50 rounded-2xl flex items-center justify-center gap-3">
                <FiCheckCircle className="text-indigo-500" />
-               <span className="text-[10px] font-black uppercase tracking-widest text-[#0f172a]">Secure Portal Handshake Complete</span>
+               <span className="text-[10px] font-black uppercase tracking-widest text-[#0f172a]">Secure Payment Complete</span>
             </div>
           </div>
 

@@ -74,9 +74,9 @@ const NavBar = () => {
   }, [isOpen]);
 
   const links = [
-    { linkName: "X Business", handler: "#", type: "link" },
+    { linkName: "AtelierX Business", handler: "/#business", type: "link" },
     { linkName: "Explore", handler: "/search?q=popular", type: "link" },
-    { linkName: "Become a Seller", handler: handleSignup, type: "button" },
+    { linkName: "Become a Freelancer", handler: handleSignup, type: "button" },
     { linkName: "Sign in", handler: handleLogin, type: "button" },
     { linkName: "Join", handler: handleSignup, type: "button2" },
   ];
@@ -161,7 +161,7 @@ const NavBar = () => {
 
   const ContextMenuData = [
     {
-      name: "Manage Tasks",
+      name: "Manage Gigs",
       callback: (e) => {
         e.stopPropagation();
         setIsContextMenuVisible(false);
@@ -199,12 +199,14 @@ const NavBar = () => {
           >
             <div className="flex items-center">
               <Link href="/">
-                <p className="text-[#191c1e] transition-colors duration-300">
-                  <span className="text-xl md:text-2xl font-bold tracking-tight flex items-center">
-                    <span className="font-medium mr-1.5 grayscale opacity-80">ATELIER</span>
-                    <span className="text-[#003527] bg-[#95d3ba]/20 px-2 py-0.5 rounded-lg">X</span>
+                <div className="flex items-center gap-2 cursor-pointer transition-transform hover:scale-105">
+                  <div className="w-8 h-8 bg-[#0f172a] rounded-lg flex items-center justify-center text-white text-xl font-black">
+                    A
+                  </div>
+                  <span className="text-xl tracking-tighter font-black text-[#0f172a]">
+                    ATELIER<span className="text-[#6366f1]">X</span>
                   </span>
-                </p>
+                </div>
               </Link>
             </div>
 
@@ -265,7 +267,7 @@ const NavBar = () => {
                     className="cursor-pointer text-[#5f6b66] hover:text-[#003527] text-sm font-semibold transition-colors"
                     onClick={() => router.push("/search?q=popular")}
                   >
-                    Explore Tasks
+                    Explore Gigs
                   </li>
                   <li
                     className="cursor-pointer text-[#5f6b66] hover:text-[#003527] text-sm font-semibold transition-colors"
@@ -277,7 +279,7 @@ const NavBar = () => {
                     className="cursor-pointer px-4 py-1.5 bg-[#f2f4f6] text-[#191c1e] rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#e0e3e5] transition-colors"
                     onClick={handleModeSwitch}
                   >
-                    {isSeller ? "Buyer Mode" : "Seller Mode"}
+                    {isSeller ? "Client Mode" : "Freelancer Mode"}
                   </li>
                   <li
                     className="cursor-pointer transition-transform hover:scale-105"
@@ -373,10 +375,10 @@ const NavBar = () => {
                   ) : (
                     <>
                       <li onClick={() => (router.push("/profile"), setIsOpen(false))} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Profile</li>
-                      {isSeller && <li onClick={() => (router.push("/seller/gigs"), setIsOpen(false))} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Manage Tasks</li>}
-                      <li onClick={() => (router.push("/search?q=popular"), setIsOpen(false))} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Explore Tasks</li>
+                      {isSeller && <li onClick={() => (router.push("/seller/gigs"), setIsOpen(false))} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Manage Gigs</li>}
+                      <li onClick={() => (router.push("/search?q=popular"), setIsOpen(false))} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Explore Gigs</li>
                       <li onClick={() => { handleOrdersNavigate(); setIsOpen(false); }} className="w-full p-4 text-[#191c1e] font-semibold hover:bg-white/50 rounded-2xl">Orders</li>
-                      <li onClick={() => { handleModeSwitch(); setIsOpen(false); }} className="w-full p-4 text-[#1DBF73] font-bold hover:bg-white/50 rounded-2xl">{isSeller ? "Switch to Buyer" : "Switch to Seller"}</li>
+                      <li onClick={() => { handleModeSwitch(); setIsOpen(false); }} className="w-full p-4 text-[#1DBF73] font-bold hover:bg-white/50 rounded-2xl">{isSeller ? "Switch to Client" : "Switch to Freelancer"}</li>
                       <li onClick={() => (router.push("/logout"), setIsOpen(false))} className="w-full p-4 text-red-500 font-semibold hover:bg-red-50 rounded-2xl mt-4">Logout</li>
                     </>
                   )}

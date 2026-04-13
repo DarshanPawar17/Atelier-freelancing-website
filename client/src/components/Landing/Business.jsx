@@ -8,12 +8,12 @@ const Business = () => {
   const features = [
     "Elite talent matching",
     "Dedicated concierge management",
-    "Advanced studio collaboration tools",
+    "Advanced project collaboration tools",
     "Secure enterprise payment solutions",
   ];
 
   return (
-    <section className="bg-[#0f172a] px-6 md:px-[10%] py-20 md:py-32 flex flex-col lg:flex-row gap-16 md:gap-24 relative overflow-hidden">
+    <section id="business" className="bg-[#0f172a] px-6 md:px-[10%] py-20 md:py-32 flex flex-col lg:flex-row gap-16 md:gap-24 relative overflow-hidden">
       {/* Background Architectural Detail */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-indigo-500/5 blur-[120px] rounded-full -mr-20 -mt-20"></div>
 
@@ -29,7 +29,7 @@ const Business = () => {
           </div>
 
           <h2 className="text-4xl md:text-6xl mb-6 md:mb-8 font-black leading-[1.1] tracking-tighter">
-            Architected for <br /> 
+            Built for <br /> 
             <span className="text-indigo-400">Enterprise Scale.</span>
           </h2>
         </div>
@@ -51,7 +51,7 @@ const Business = () => {
             className="group relative inline-flex items-center justify-center bg-white text-[#0f172a] px-12 py-5 rounded-full text-xs font-black uppercase tracking-[0.2em] studio-ambient hover:scale-105 active:scale-95 transition-all"
             type="button"
           >
-            Explore the Solutions
+            Explore the AtelierX Standard
           </button>
         </div>
       </div>
@@ -72,7 +72,9 @@ const Business = () => {
         {/* Floating Stat Card */}
         <div className="absolute -bottom-6 -left-6 studio-paper p-8 studio-ambient studio-ghost-border max-w-[200px] animate-float">
           <p className="text-3xl font-black text-[#0f172a] mb-1">99%</p>
-          <p className="text-[10px] uppercase tracking-widest font-black text-slate-400">Project Success Rate</p>
+          <span className="text-[10px] uppercase tracking-[0.4em] font-black text-slate-400 mb-4 block">
+            AtelierX Ecosystem
+          </span>
         </div>
       </div>
     </section>

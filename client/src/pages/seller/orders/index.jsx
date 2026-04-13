@@ -25,7 +25,7 @@ const SellerOrders = () => {
         setOrders(data.orders);
       } catch (error) {
         console.error("Orders error:", error);
-        toast.error("Failed to sync store logistics");
+        toast.error("Failed to sync project list");
       }
     };
 
@@ -44,8 +44,8 @@ const SellerOrders = () => {
         {/* Header Section */}
         <div className="flex flex-col gap-6 mb-12">
           <div>
-            <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Logistics & Fullfillment</span>
-            <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Your Commissions</h1>
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Sales & Orders</span>
+            <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Your Projects</h1>
           </div>
           
           <div className="flex items-center gap-4 border-b border-slate-200">
@@ -55,7 +55,7 @@ const SellerOrders = () => {
                 activeTab === "ACTIVE" ? "border-indigo-500 text-indigo-600" : "border-transparent text-slate-400 hover:text-slate-600"
               }`}
             >
-              Active Commissions
+              Active Projects
             </button>
             <button
               onClick={() => setActiveTab("COMPLETED")}
@@ -75,10 +75,10 @@ const SellerOrders = () => {
               <thead>
                 <tr className="bg-slate-50/50">
                   <th scope="col" className={tableHeaderClass}>Project Details</th>
-                  <th scope="col" className={tableHeaderClass}>Yield</th>
-                  <th scope="col" className={tableHeaderClass}>Timeline</th>
+                  <th scope="col" className={tableHeaderClass}>Earnings</th>
+                  <th scope="col" className={tableHeaderClass}>Delivery</th>
                   <th scope="col" className={tableHeaderClass}>Client</th>
-                  <th scope="col" className={tableHeaderClass}>Commencement</th>
+                  <th scope="col" className={tableHeaderClass}>Order Date</th>
                   <th scope="col" className={tableHeaderClass}><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
@@ -136,7 +136,7 @@ const SellerOrders = () => {
                           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all font-black text-[10px] uppercase tracking-widest"
                         >
                           <FiMessageSquare size={16} />
-                          {activeTab === "ACTIVE" ? "Open Inquiry" : "View Record"}
+                          {activeTab === "ACTIVE" ? "Contact Client" : "View Record"}
                         </Link>
                       </td>
                     </tr>
@@ -148,10 +148,10 @@ const SellerOrders = () => {
                          <FiPackage size={24} />
                        </div>
                        <h3 className="text-xl font-black text-slate-400 mb-2">
-                         {activeTab === "ACTIVE" ? "No Commissions Yet" : "No Completed Projects"}
+                         {activeTab === "ACTIVE" ? "No Projects Yet" : "No Completed Projects"}
                        </h3>
                        <p className="text-slate-400 font-medium text-sm">
-                         {activeTab === "ACTIVE" ? "Active orders from your portfolio items will appear here." : "You have no projects in your delivery history."}
+                         {activeTab === "ACTIVE" ? "Active orders for your gigs will appear here." : "You have no projects in your delivery history."}
                        </p>
                     </td>
                   </tr>

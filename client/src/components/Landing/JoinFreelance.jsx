@@ -42,14 +42,13 @@ const JoinFreelance = () => {
               <span className="text-[11px] uppercase tracking-[0.4em] font-black text-indigo-300/60 mb-6 block">
                 The Next Evolution
               </span>
-              <h2 className="text-4xl md:text-6xl font-black text-white leading-[1.1] tracking-tighter">
-                Suddenly, it&apos;s all <br />
-                within <span className="text-indigo-300">reach.</span>
+              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-8 leading-tight">
+                Ready to join <br/> <span className="text-indigo-400">AtelierX?</span>
               </h2>
             </div>
 
             <p className="text-slate-300 text-lg md:text-xl max-w-xl leading-relaxed studio-reveal studio-delay-1">
-              Join the premiere collective of digital artisans. Whether you architecturalize solutions or create them, your next masterpiece begins here.
+              Join the premiere collective of digital artisans. Whether you create digital solutions or hire for them, your next masterpiece begins here on AtelierX.
             </p>
 
             <div className="flex flex-wrap gap-6 studio-reveal studio-delay-2">
@@ -57,7 +56,7 @@ const JoinFreelance = () => {
                 onClick={handleJoin}
                 className="bg-white text-[#0f172a] px-12 py-5 rounded-full text-xs font-black uppercase tracking-[0.2em] studio-ambient hover:scale-105 active:scale-95 transition-all"
               >
-                Join the Atelier
+                Join AtelierX
               </button>
               <button 
                 onClick={() => router.push("/search?q=popular")}
@@ -76,7 +75,7 @@ const JoinFreelance = () => {
                  ))}
                </div>
                <p className="text-slate-400 text-[10px] uppercase tracking-widest font-black">
-                 Trusted by 50,000+ Specialists
+                 Trusted by 50,000+ Freelancers
                </p>
             </div>
           </div>

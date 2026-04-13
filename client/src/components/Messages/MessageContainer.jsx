@@ -103,7 +103,7 @@ const MessageContainer = () => {
   };
 
   const handleComplete = async () => {
-    if (!confirm("Are you satisfied with the deliverables? This will officially close the portfolio assignment.")) return;
+    if (!confirm("Are you satisfied with the deliverables? This will officially close the project.")) return;
 
     try {
       setActionLoading(true);
@@ -165,7 +165,7 @@ const MessageContainer = () => {
       const formData = new FormData();
       formData.append("attachment", file);
       formData.append("receiverId", receiverId);
-      formData.append("message", `Transferred a secure payload: ${file.name}`);
+      formData.append("message", `Sent a file: ${file.name}`);
 
       const response = await axios.post(
         `${ADD_ATTACHMENT_ROUTE}/${orderId}`,
@@ -231,13 +231,13 @@ const MessageContainer = () => {
             <div className="px-10 py-6 border-b border-slate-50 flex items-center justify-between bg-white/50 backdrop-blur-md">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 font-black">
-                  {isSeller ? "CL" : "SP"}
+                  {isSeller ? "CL" : "FL"}
                 </div>
                 <div className="flex flex-col">
                   <h3 className="text-sm font-black text-[#0f172a] uppercase tracking-widest">
-                    {isSeller ? "Client Communication" : "Specialist Briefing"}
+                    {isSeller ? "Client Communication" : "Freelancer Chat"}
                   </h3>
-                  <span className="text-[10px] font-bold text-slate-400">Order Session: {orderId?.slice(-8).toUpperCase()}</span>
+                  <span className="text-[10px] font-bold text-slate-400">Project Session: {orderId?.slice(-8).toUpperCase()}</span>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -264,12 +264,12 @@ const MessageContainer = () => {
               {isLoading && messages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full gap-4">
                   <ThreeDots height="40" width="40" color="#6366f1" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Syncing Comms</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Messages...</span>
                 </div>
               ) : (
                 messages.map((message) => {
                   const isOwner = message.senderId === userInfo?.id;
-                  const isSystem = message.text.startsWith("SYSTEM ARCHITECT:");
+                  const isSystem = message.text.startsWith("SYSTEM:");
                   
                   if (isSystem) {
                     return (
@@ -349,7 +349,7 @@ const MessageContainer = () => {
                 <input
                   type="text"
                   className="flex-1 bg-white studio-ghost-border rounded-2xl py-4 px-6 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50 transition-all placeholder:text-slate-300"
-                  placeholder={order?.status === "COMPLETED" ? "Session closed" : "Compose briefing..."}
+                  placeholder={order?.status === "COMPLETED" ? "Session closed" : "Type a message..."}
                   onChange={(e) => setMessageText(e.target.value)}
                   value={messageText}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
@@ -369,7 +369,7 @@ const MessageContainer = () => {
           <div className="w-full lg:w-96 flex flex-col gap-6">
             <div className="studio-paper studio-ambient rounded-[3rem] studio-ghost-border bg-white p-10 flex flex-col gap-8 flex-1 overflow-y-auto">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-2 block">Project Briefing</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500 mb-2 block">Project Details</span>
                 <h2 className="text-2xl font-black text-[#0f172a] tracking-tighter leading-tight">
                   {order?.gig?.title || "Loading Project..."}
                 </h2>
@@ -434,7 +434,7 @@ const MessageContainer = () => {
                   <div>
                     <div className="flex items-center gap-2 mb-3 text-amber-700">
                       <FiFileText size={16} />
-                      <span className="text-[10px] font-black uppercase tracking-widest">Specialist Handover Note</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Freelancer's Note</span>
                     </div>
                     <p className="text-xs font-medium text-amber-800 leading-relaxed italic">"{order.deliveryNote}"</p>
                   </div>
@@ -482,9 +482,9 @@ const MessageContainer = () => {
                   </button>
                 )}
                 <p className="text-[10px] font-medium text-slate-400 text-center mt-4 px-4 leading-relaxed">
-                  {isSeller 
-                    ? "Submitting final work will notify the client for approval and portfolio lock."
-                    : "Approving completion finalized the transaction and closes this briefing room."}
+                   {isSeller 
+                    ? "Submitting final work will notify the client for approval."
+                    : "Approving completion finalizes the transaction and closes this chat room."}
                 </p>
               </div>
             </div>

@@ -9,7 +9,7 @@ import { useCookies } from "react-cookie";
 import { ThreeDots } from "react-loader-spinner";
 import { toast } from "react-toastify";
 
-function TaskDetails() {
+function GigDetails() {
   const router = useRouter();
   const { gigId } = router.query;
   const [cookies] = useCookies();
@@ -48,7 +48,7 @@ function TaskDetails() {
 
   const handleAcceptAssignment = () => {
     if (!userInfo) {
-      toast.error("Please sign in to accept this studio assignment.");
+      toast.error("Please sign in to hire this freelancer.");
       return;
     }
     
@@ -63,19 +63,19 @@ function TaskDetails() {
       {taskData === undefined ? (
         <div className="flex flex-col items-center justify-center py-40 gap-6">
           <ThreeDots height="40" width="80" color="#6366f1" />
-          <span className="text-xs font-black uppercase tracking-widest text-slate-400">Synchronizing Studio Brief...</span>
+          <span className="text-xs font-black uppercase tracking-widest text-slate-400">Loading Gig Details...</span>
         </div>
       ) : (
         <>
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16">
             
-            {/* Main Task Content */}
+            {/* Main Gig Content */}
             <div className="flex-1 space-y-12">
               
-              {/* Task Header */}
+              {/* Gig Header */}
               <div className="space-y-6">
                 <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-indigo-500">
-                  <FiShoppingBag /> Available Studio Assignment
+                  <FiShoppingBag /> Available Gig
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black text-[#0f172a] tracking-tighter leading-tight">
                   {taskData.title}
@@ -114,7 +114,7 @@ function TaskDetails() {
                 <div className="relative aspect-video w-full rounded-[2.5rem] overflow-hidden">
                   <Image
                     src={taskData.images?.[0] || "/placeholder_large.jpg"}
-                    alt="Task Main Portfolio"
+                    alt="Gig Portfolio"
                     fill
                     className="object-cover"
                   />
@@ -128,7 +128,7 @@ function TaskDetails() {
 
               {/* Task Briefing */}
               <div className="space-y-6">
-                <h2 className="text-3xl font-black text-[#0f172a] tracking-tight">Assignment Briefing</h2>
+                <h2 className="text-3xl font-black text-[#0f172a] tracking-tight">Gig Description</h2>
                 <p className="text-slate-600 font-medium leading-[2] text-lg whitespace-pre-line">
                   {taskData.description}
                 </p>
@@ -136,7 +136,7 @@ function TaskDetails() {
 
               {/* Project Deliverables */}
               <div className="space-y-6">
-                <h2 className="text-2xl font-black text-[#0f172a] tracking-tight">Studio Deliverables</h2>
+                <h2 className="text-2xl font-black text-[#0f172a] tracking-tight">Gig Features</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {taskData.features?.map((feature, index) => (
                     <div key={index} className="flex items-center gap-4 p-5 bg-white rounded-3xl border border-slate-50 shadow-sm studio-ambient hover:border-indigo-100 transition-all">
@@ -158,7 +158,7 @@ function TaskDetails() {
                 <div className="studio-paper studio-ambient rounded-[3rem] studio-ghost-border bg-white p-10 space-y-10 group">
                   <div className="flex items-end justify-between">
                     <div className="flex flex-col">
-                      <span className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Fixed Assignment Fee</span>
+                      <span className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Gig Price</span>
                       <span className="text-5xl font-black text-[#0f172a] tracking-tighter transition-all group-hover:text-indigo-600">₹{taskData.price}</span>
                     </div>
                   </div>
@@ -189,7 +189,7 @@ function TaskDetails() {
                     disabled={userInfo?.id === taskData.userId || taskData.isOrdered}
                     className="w-full bg-[#0f172a] text-white py-6 rounded-3xl text-sm font-black uppercase tracking-[0.3em] studio-ambient hover:bg-indigo-600 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
                   >
-                    {taskData.isOrdered ? "Task Commissioned" : userInfo?.id === taskData.userId ? "Your Own Brief" : "Accept Assignment"}
+                    {taskData.isOrdered ? "Gig Hired" : userInfo?.id === taskData.userId ? "Your Gig" : "Hire Freelancer"}
                     {!taskData.isOrdered && userInfo?.id !== taskData.userId && <FiArrowRight size={16} />}
                   </button>
 
@@ -204,7 +204,7 @@ function TaskDetails() {
                   <button
                     className="text-xs font-black uppercase tracking-widest text-[#0f172a] hover:text-indigo-600 transition-colors"
                   >
-                    Discuss Assignment Specifications
+                    Discuss Gig Details
                   </button>
                 </div>
 
@@ -230,9 +230,9 @@ function TaskDetails() {
                   </div>
                   
                   <div className="space-y-4">
-                    <h3 className="text-3xl font-black text-[#0f172a] tracking-tight">Confirm Assignment?</h3>
+                    <h3 className="text-3xl font-black text-[#0f172a] tracking-tight">Hire this Freelancer?</h3>
                     <p className="text-slate-500 font-medium leading-relaxed">
-                      You are about to commission <span className="text-[#0f172a] font-bold">"{taskData.title}"</span>. This will lock the task to your project board and initiate a direct message thread with the provider.
+                      You are about to hire the freelancer for <span className="text-[#0f172a] font-bold">"{taskData.title}"</span>. This will initiate a chat thread so you can start working together.
                     </p>
                   </div>
 
@@ -242,13 +242,13 @@ function TaskDetails() {
                       disabled={isAccepting}
                       className="w-full bg-[#0f172a] text-white py-6 rounded-3xl text-sm font-black uppercase tracking-[0.3em] studio-ambient hover:bg-indigo-600 transition-all flex items-center justify-center gap-3"
                     >
-                      {isAccepting ? <ThreeDots height="20" width="40" color="white" /> : "Initiate Briefing"}
+                      {isAccepting ? <ThreeDots height="20" width="40" color="white" /> : "Hire Now"}
                     </button>
                     <button
                       onClick={() => setIsModalOpen(false)}
                       className="w-full py-4 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors"
                     >
-                      Abandon Assignment
+                      Cancel
                     </button>
                   </div>
                 </div>
@@ -261,4 +261,4 @@ function TaskDetails() {
   );
 }
 
-export default TaskDetails;
+export default GigDetails;

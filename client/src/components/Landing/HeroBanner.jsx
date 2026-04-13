@@ -30,7 +30,7 @@ const HeroBanner = () => {
         <div className="lg:col-span-7 flex flex-col gap-8 md:gap-12">
           <div className="studio-reveal">
             <span className="text-[11px] uppercase tracking-[0.4em] font-black text-slate-400 mb-4 block">
-              Architecting Digital Excellence
+              AtelierX Digital Excellence
             </span>
             <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] leading-[1.05] font-black text-[#0f172a] tracking-tighter">
               The Future of <br />
@@ -39,7 +39,7 @@ const HeroBanner = () => {
           </div>
 
           <p className="studio-reveal studio-delay-1 text-slate-500 text-lg md:text-xl max-w-xl leading-relaxed">
-            A curated studio marketplace where architectural precision meets professional talent. 
+            A curated studio marketplace where professional precision meets professional talent. 
             Find the perfect partner for your next digital masterpiece.
           </p>
 
@@ -89,7 +89,7 @@ const HeroBanner = () => {
             <div className="relative w-full h-full rounded-[2rem] overflow-hidden">
               <Image
                 src="/hero_studio_architectural_1774766439002.png"
-                alt="Architectural Studio"
+                alt="AtelierX Studio"
                 fill
                 className="object-cover transform hover:scale-110 transition-transform duration-[2000ms] ease-out"
                 priority

@@ -136,7 +136,7 @@ function Profile() {
           {/* Page Header */}
           <div className="mb-10">
             <span className="text-[10px] font-black uppercase tracking-[0.4em] text-indigo-500 mb-3 block">
-              Studio Identity
+              User Profile
             </span>
             <h1 className="text-4xl font-black text-[#0f172a] tracking-tighter">
               Your Profile
@@ -232,7 +232,7 @@ function Profile() {
               {/* Quick Stats Card */}
               <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm p-6 flex flex-col gap-4">
                 <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  Studio Stats
+                  Account Stats
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col items-center p-4 bg-slate-50 rounded-2xl">
@@ -243,7 +243,7 @@ function Profile() {
                   <div className="flex flex-col items-center p-4 bg-slate-50 rounded-2xl">
                     <FiBriefcase className="text-indigo-400 mb-1" size={18} />
                     <span className="text-xl font-black text-[#0f172a]">{userInfo?.tasksCompleted || 0}</span>
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Tasks</span>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Gigs</span>
                   </div>
                 </div>
               </div>
@@ -311,7 +311,7 @@ function Profile() {
                     value={data.description}
                     onChange={handleChange}
                     className={`${inputClass} resize-none`}
-                    placeholder="Describe your expertise and what kind of projects you specialise in..."
+                    placeholder="Describe your expertise and what kind of projects you specialize in..."
                   />
                   <span className="text-[10px] text-slate-300 font-medium mt-2 text-right">
                     {data.description.length} / 500
@@ -336,7 +336,7 @@ function Profile() {
                 </button>
 
                 <p className="text-center text-[10px] text-slate-300 font-bold uppercase tracking-widest">
-                  AtelierX · Secured by Studio Protocol
+                  AtelierX · Secured by Secure Protocol
                 </p>
               </div>
             </div>

@@ -37,7 +37,7 @@ const SellerDashboard = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div className="flex flex-col gap-2">
             <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Business Control</span>
-            <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Task Management Dashboard</h1>
+            <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">Freelancer Dashboard</h1>
           </div>
           
           <button 
@@ -45,7 +45,7 @@ const SellerDashboard = () => {
             className="flex items-center gap-3 bg-[#0f172a] text-white px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-[#6366f1] transition-all hover:scale-[1.02] active:scale-95 studio-ambient shadow-xl shadow-indigo-500/10"
           >
             <FiPlus size={16} />
-            Post New Task
+            Post New Gig
           </button>
         </div>
 
@@ -59,7 +59,7 @@ const SellerDashboard = () => {
             </div>
             <div className="flex flex-col">
               <span className="text-3xl font-black text-[#0f172a]">{dashboardData?.gigs || 0}</span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Published Tasks</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Active Gigs</span>
             </div>
           </div>
 
@@ -101,16 +101,16 @@ const SellerDashboard = () => {
         {/* Informational Section */}
         <div className="studio-paper studio-ambient rounded-[3rem] studio-ghost-border bg-white p-12 md:p-16 flex flex-col md:flex-row items-center gap-10">
           <div className="flex-1 space-y-4 text-center md:text-left">
-            <h2 className="text-3xl font-black text-[#0f172a] tracking-tight">Expand Your Task Board</h2>
+            <h2 className="text-3xl font-black text-[#0f172a] tracking-tight">Grow Your Portfolio</h2>
             <p className="text-slate-500 font-medium leading-relaxed max-w-xl">
-              Creating more diverse tasks increases your visibility and commission potential. Start posting specialized offerings to attract more project clients.
+              Creating more diverse gigs increases your visibility and earning potential. Start posting services to attract more clients.
             </p>
           </div>
           <button 
             onClick={() => router.push("/seller/gigs/create")}
             className="px-10 py-5 bg-indigo-50 text-indigo-600 rounded-3xl text-sm font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all whitespace-nowrap"
           >
-            Post a New Task
+            Post a New Gig
           </button>
         </div>
 

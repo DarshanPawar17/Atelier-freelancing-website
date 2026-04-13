@@ -5,12 +5,12 @@ import { BsCheckCircle } from "react-icons/bs";
 const Everything = () => {
   const checkData = [
     {
-      title: "Architectural Precision",
+      title: "Professional Precision",
       subtitle: "Every project is treated as a masterpiece, handled with the utmost technical and creative rigor.",
     },
     {
       title: "Curated Talent Pool",
-      subtitle: "Access a hand-picked collective of the top 1% global digital artisans and specialists.",
+      subtitle: "Access a hand-picked collective of the top 1% global digital artisans and freelancers.",
     },
     {
       title: "Encrypted Operations",
@@ -29,7 +29,7 @@ const Everything = () => {
         <div className="flex flex-col gap-10 md:gap-14">
           <div className="studio-reveal">
             <span className="text-[11px] uppercase tracking-[0.4em] font-black text-slate-400 mb-4 block">
-              The Atelier Standard
+              The AtelierX Standard
             </span>
             <h2 className="text-4xl md:text-6xl font-black text-[#0f172a] leading-[1.1] tracking-tighter">
               A Whole World of <br />
@@ -85,7 +85,7 @@ const Everything = () => {
           {/* Floating 'Quality' Tag */}
           <div className="absolute top-12 -left-6 studio-paper py-3 px-6 studio-ambient studio-ghost-border animate-float">
              <span className="text-[10px] uppercase tracking-widest font-black text-[#6366f1]">
-               Certified Studio Only
+                Verified Freelancers Only
              </span>
           </div>
         </div>

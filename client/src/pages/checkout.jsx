@@ -23,7 +23,7 @@ const CheckoutPage = () => {
         setTaskData(data.gig);
       } catch (err) {
         console.error(err);
-        toast.error("Failed to fetch assignment details.");
+        toast.error("Failed to fetch gig details.");
       }
     };
     fetchTask();
@@ -58,8 +58,8 @@ const CheckoutPage = () => {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: "FreelanceX",
-        description: `Commission for ${taskData.title}`,
+        name: "AtelierX",
+        description: `Order for ${taskData.title}`,
         order_id: orderData.orderId,
         handler: async function (response) {
           // 2. Verify Payment on Backend
@@ -78,7 +78,7 @@ const CheckoutPage = () => {
             );
 
             if (verifyData.status === "success") {
-              toast.success("Payment successful! Assignment Commissioned.");
+              toast.success("Payment successful! Gig Hired.");
               router.push(`/buyer/orders/messages/${verifyData.orderId}`);
             } else {
               toast.error("Payment verification failed.");
@@ -92,7 +92,7 @@ const CheckoutPage = () => {
         },
         prefill: {
           name: cookies.username || "Guest User",
-          email: "test@freelancex.com",
+          email: "test@atelierx.com",
           contact: "9999999999",
         },
         theme: {
@@ -144,7 +144,7 @@ const CheckoutPage = () => {
                Payment Gateway
             </h1>
             <p className="text-slate-500 font-medium mt-4 leading-relaxed">
-              Complete your payment via Razorpay to officially start the engagement. All transactions are secured with 256-bit encryption.
+              Complete your payment via Razorpay to officially hire the freelancer. All transactions are secured with 256-bit encryption.
             </p>
           </div>
 
@@ -168,7 +168,7 @@ const CheckoutPage = () => {
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-sm">
                   <FiZap className="text-indigo-500" size={32} />
                 </div>
-                <h4 className="font-black text-[#0f172a] mb-2">Ready to Commission</h4>
+                <h4 className="font-black text-[#0f172a] mb-2">Ready to Hire</h4>
                 <p className="text-sm text-slate-500 max-w-[240px]">
                   Click the button below to open the secure payment window.
                 </p>
@@ -183,10 +183,10 @@ const CheckoutPage = () => {
               {isProcessing ? (
                 <>
                   <ThreeDots height="20" width="40" color="#ffffff" />
-                  Processing Terminal...
+                  Secure Checkout
                 </>
               ) : (
-                `Authorize ₹${taskData?.price || "0.00"}`
+                `Pay ₹${taskData?.price || "0.00"}`
               )}
             </button>
 
@@ -206,7 +206,7 @@ const CheckoutPage = () => {
              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-transparent"></div>
              <div className="relative z-10 space-y-8">
                 <div>
-                   <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400">Assignment Brief</span>
+                   <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400">Gig Summary</span>
                    <h2 className="text-3xl font-black mt-2 tracking-tight leading-tight">
                     {taskData ? taskData.title : (
                       <div className="h-8 w-4/5 bg-slate-800 rounded-lg animate-pulse" />
@@ -237,7 +237,7 @@ const CheckoutPage = () => {
           <div className="flex items-center gap-4 bg-indigo-50 text-indigo-700 p-6 rounded-3xl mx-4 lg:mx-0">
              <FiCheckCircle size={24} className="shrink-0" />
              <p className="text-xs font-bold leading-relaxed">
-               Payment is held in escrow and released to the specialist only upon project approval.
+               Payment is held in escrow and released to the freelancer only upon project approval.
              </p>
           </div>
         </div>

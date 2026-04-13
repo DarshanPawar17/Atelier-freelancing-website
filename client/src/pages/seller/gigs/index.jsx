@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useCookies } from "react-cookie";
 import { FiEdit2, FiPlus, FiBox, FiCheckCircle, FiActivity, FiTrash2 } from "react-icons/fi";
 
-const SellerTasks = () => {
+const SellerGigs = () => {
   const [cookies] = useCookies();
   const [tasks, setTasks] = useState([]);
 
@@ -26,7 +26,7 @@ const SellerTasks = () => {
   }, [cookies.jwt]);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to permanently delete this task?")) {
+    if (!window.confirm("Are you sure you want to permanently delete this gig?")) {
       return;
     }
     
@@ -53,7 +53,7 @@ const SellerTasks = () => {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="flex flex-col gap-2">
             <span className="text-xs font-black uppercase tracking-[0.3em] text-indigo-500">Service Management</span>
-            <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">My Task Board</h1>
+            <h1 className="text-4xl md:text-5xl font-black text-[#0f172a] tracking-tighter">My Gigs</h1>
           </div>
           
           <Link 
@@ -61,7 +61,7 @@ const SellerTasks = () => {
             className="flex items-center gap-3 bg-[#0f172a] text-white px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-[#6366f1] transition-all hover:scale-[1.02] active:scale-95 studio-ambient shadow-lg shadow-indigo-500/10"
           >
             <FiPlus size={16} />
-            Post a New Task
+            Post a New Gig
           </Link>
         </div>
 
@@ -71,7 +71,7 @@ const SellerTasks = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50/50">
-                  <th scope="col" className={tableHeaderClass}>Task Title</th>
+                  <th scope="col" className={tableHeaderClass}>Gig Title</th>
                   <th scope="col" className={tableHeaderClass}>Category</th>
                   <th scope="col" className={tableHeaderClass}>Delivery</th>
                   <th scope="col" className={tableHeaderClass}>Price</th>
@@ -86,7 +86,7 @@ const SellerTasks = () => {
                       <td className={tableCellClass}>
                         <div className="flex flex-col">
                           <span className="group-hover:text-indigo-600 transition-colors">{title}</span>
-                          <span className="text-[10px] text-slate-400 font-medium">TASK ID: {id.slice(-8).toUpperCase()}</span>
+                          <span className="text-[10px] text-slate-400 font-medium">GIG ID: {id.slice(-8).toUpperCase()}</span>
                         </div>
                       </td>
                       <td className={tableCellClass}>
@@ -107,7 +107,7 @@ const SellerTasks = () => {
                         {isOrdered ? (
                           <div className="flex items-center gap-2 px-4 py-2 bg-emerald-50 rounded-2xl border border-emerald-100 w-fit">
                             <FiCheckCircle className="text-emerald-500" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Commissioned</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Hired</span>
                           </div>
                         ) : (
                           <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 rounded-2xl border border-indigo-100 w-fit">
@@ -146,8 +146,8 @@ const SellerTasks = () => {
                           <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-6 font-black">
                             <FiBox size={24} />
                           </div>
-                          <h3 className="text-xl font-black text-slate-400 mb-2">No Active Tasks Found</h3>
-                          <p className="text-slate-400 font-medium text-sm">Expand your reach by posting your first task today.</p>
+                          <h3 className="text-xl font-black text-slate-400 mb-2">No Active Gigs Found</h3>
+                          <p className="text-slate-400 font-medium text-sm">Expand your reach by posting your first gig today.</p>
                        </div>
                     </td>
                   </tr>
@@ -161,4 +161,4 @@ const SellerTasks = () => {
   );
 };
 
-export default SellerTasks;
+export default SellerGigs;
